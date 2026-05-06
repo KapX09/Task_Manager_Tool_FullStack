@@ -92,42 +92,6 @@ project/                          ← Root
     ├── package.json
     ├── server.js
     └── start.bat(optional write .bat file with path for click start)
-
-=======
-project
-├── server/                    ← Backend (Node.js + Express + MongoDB local)
-│   ├── config/
-│   │   └── db.js
-│   ├── models/                ← User, Project, Task, Log
-│   │   ├── User.js
-│   │   ├── Project.js
-│   │   ├── Task.js
-│   │   └── Log.js
-│   ├── middleware/
-│   │   ├── auth.js            ← auth & role
-│   │   └── role.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── projects.js
-│   │   ├── tasks.js
-│   │   ├── users.js
-│   │   └── logs.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── projectController.js
-│   │   ├── taskController.js
-│   │   ├── userController.js
-│   │   └── logController.js
-│   ├── public/
-│   │   └── index.html         ← Frontend (HTML,CSS,Bootstrap)
-│   ├── nodemodules/
-│   ├── start.bat              ← Quick start script
-│   ├── .gitingnore
-│   ├── package.json
-│   └── server.js
-├── data/                    ← MongoDB data folder
-└── README.md                ← Instructions and overview
->>>>>>> c5d8f793488116d24013ea6b4304553ade48a448
 ```
 
 ## Tech Stack
@@ -185,11 +149,8 @@ http://localhost:5000
 
 ## Environment Variables
 
-<<<<<<< HEAD
 **Important**: The `.env` file is **not pushed** to GitHub for security reasons.
 
-=======
->>>>>>> c5d8f793488116d24013ea6b4304553ade48a448
 Create `.env` file in `server` folder:
 
 ```env
