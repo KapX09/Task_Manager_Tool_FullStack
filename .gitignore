@@ -19,12 +19,14 @@ logs/
 # OS generated files
 .DS_Store
 Thumbs.db
+ehthumbs.db
 
 # Editor folders
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-*
 
 # Old test files
 public/index1.html
@@ -34,5 +36,11 @@ public/index3.html
 # Temporary files
 tmp/
 temp/
+dist/
+build/
 
-#Prevents uploading heavy/sensitive folders (node_modules, data, .env) which keeps your GitHub repo clean and secure.
+# Notes:
+# This file prevents uploading heavy, sensitive, or unnecessary files.
+# Keeps repository clean and secure.
+# .env is hidden for security (contains JWT secret & DB URI)
+# node_modules and data folder are ignored because they can be regenerated.
