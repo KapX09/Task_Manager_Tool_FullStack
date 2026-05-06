@@ -74,24 +74,39 @@ This project follows a REST API architecture with a MongoDB database.
 ## System Structure
 
 ```
-project/                          ← Root
-├── .gitignore
-├── README.md
-├── data/                    ← Empty folder (for MongoDB)
-├── assets/                  ← (optional, for images later)
-└── server/                  ← backend code (node.js Express)
-    ├── public/
-    │   └── index.html
-    ├── config/
-    ├── controllers/
-    ├── middleware/
-    ├── models/
-    ├── routes/
-    ├── .env(add into gitignore)
-    ├── package.json
-    ├── server.js
-    └── start.bat(optional write .bat file with path for click start)
-
+project
+├── server/                    ← Backend (Node.js + Express + MongoDB local)
+│   ├── config/
+│   │   └── db.js
+│   ├── models/                ← User, Project, Task, Log
+│   │   ├── User.js
+│   │   ├── Project.js
+│   │   ├── Task.js
+│   │   └── Log.js
+│   ├── middleware/
+│   │   ├── auth.js            ← auth & role
+│   │   └── role.js
+│   ├── routes/
+│   │   ├── auth.js
+│   │   ├── projects.js
+│   │   ├── tasks.js
+│   │   ├── users.js
+│   │   └── logs.js
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   ├── projectController.js
+│   │   ├── taskController.js
+│   │   ├── userController.js
+│   │   └── logController.js
+│   ├── public/
+│   │   └── index.html         ← Frontend (HTML,CSS,Bootstrap)
+│   ├── nodemodules/
+│   ├── start.bat              ← Quick start script
+│   ├── .gitingnore
+│   ├── package.json
+│   └── server.js
+├── data/                    ← MongoDB data folder
+└── README.md                ← Instructions and overview
 ```
 
 ## Tech Stack
@@ -148,8 +163,6 @@ http://localhost:5000
 ```
 
 ## Environment Variables
-
-**Important**: The `.env` file is **not pushed** to GitHub for security reasons.
 
 Create `.env` file in `server` folder:
 
