@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskScheduler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --sidebar-w: 230px;
+    --bg: #f7f7f5;
+    --surface: #ffffff;
+    --border: #e8e8e4;
+    --border-soft: #f0f0ec;
+    --text: #1a1a1a;
+    --muted: #8f8f8a;
+    --muted2: #b5b5b0;
+    --accent: #2563eb;
+    --accent-soft: #eff4ff;
+    --accent-hover: #1d4ed8;
+    --green: #16a34a;
+    --green-soft: #f0fdf4;
+    --orange: #ea580c;
+    --orange-soft: #fff7ed;
+    --red: #dc2626;
+    --red-soft: #fef2f2;
+    --yellow: #ca8a04;
+    --yellow-soft: #fefce8;
+    --gray-soft: #f4f4f2;
+    --radius: 8px;
+    --radius-sm: 5px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px 36px;
+    width: 400px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .auth-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: -0.4px;
+  }
+
+  .auth-logo span { color: var(--accent); }
+
+  .auth-tagline {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+
+  .auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .form-control, .form-select {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13.5px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    background: var(--surface);
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    outline: none;
+  }
+
+  .btn-primary-app {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 9px 18px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+    width: 100%;
+  }
+
+  .btn-primary-app:hover { background: var(--accent-hover); }
+
+  #app-screen { display: none; }
+
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+
+  .sidebar-top {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .app-logo {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-icon {
+    width: 26px; height: 26px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-size: 13px;
+  }
+
+  .app-logo span { color: var(--accent); }
+
+  .nav-section-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted2);
+    padding: 14px 16px 4px;
+  }
+
+  .nav-link-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 16px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .nav-link-item:hover { background: var(--gray-soft); color: var(--text); }
+
+  .nav-link-item.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .nav-link-item i { font-size: 15px; width: 18px; text-align: center; }
+
+  .sidebar-bottom {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+
+  .user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .user-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .user-details { min-width: 0; flex: 1; }
+  .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .user-role-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .role-ADMIN { background: var(--orange-soft); color: var(--orange); }
+  .role-MEMBER { background: var(--accent-soft); color: var(--accent); }
+
+  .logout-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.15s;
+    border: none;
+    background: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+  }
+
+  .logout-link:hover { color: var(--red); }
+
+  .main-content {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    padding: 28px 32px;
+  }
+
+  .page { display: none; }
+  .page.active { display: block; animation: fadein 0.15s ease; }
+
+  @keyframes fadein {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-heading {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    margin-bottom: 2px;
+  }
+
+  .page-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .card-app {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .stat-val {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .badge-status {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .s-TODO { background: var(--gray-soft); color: var(--muted); }
+  .s-IN_PROGRESS { background: var(--accent-soft); color: var(--accent); }
+  .s-DONE { background: var(--green-soft); color: var(--green); }
+  .s-HIGH { background: var(--red-soft); color: var(--red); }
+  .s-MEDIUM { background: var(--yellow-soft); color: var(--yellow); }
+  .s-LOW { background: var(--gray-soft); color: var(--muted); }
+  .s-ADMIN { background: var(--orange-soft); color: var(--orange); }
+  .s-MEMBER { background: var(--accent-soft); color: var(--accent); }
+
+  .app-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+  .app-table th {
+    padding: 9px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    background: var(--gray-soft);
+  }
+
+  .app-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: middle;
+  }
+
+  .app-table tr:last-child td { border-bottom: none; }
+  .app-table tbody tr:hover td { background: var(--gray-soft); }
+
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    box-shadow: var(--shadow);
+    height: 100%;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  .project-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .project-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+
+  .project-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .avatar-stack { display: flex; }
+
+  .mini-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-left: -5px;
+  }
+
+  .mini-avatar:first-child { margin-left: 0; }
+
+  .task-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-soft);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .task-row:last-child { border-bottom: none; }
+  .task-row:hover { background: var(--gray-soft); }
+
+  .task-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-HIGH { background: var(--red); }
+  .dot-MEDIUM { background: var(--yellow); }
+  .dot-LOW { background: var(--muted2); }
+
+  .task-title-text { font-size: 13.5px; font-weight: 500; flex: 1; }
+  .task-proj { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .task-due { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .task-due.overdue { color: var(--red); font-weight: 600; }
+
+  .kanban-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+  .kanban-col {
+    background: var(--gray-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    min-height: 280px;
+  }
+
+  .kanban-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  .kanban-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+  }
+
+  .kanban-badge {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 20px;
+    padding: 0 8px;
+    line-height: 1.8;
+  }
+
+  .kanban-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    cursor: pointer;
+    box-shadow: var(--shadow);
+    transition: border-color 0.1s, box-shadow 0.1s;
+  }
+
+  .kanban-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .kanban-card:last-child { margin-bottom: 0; }
+  .kanban-card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+  .kanban-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+
+  .empty-col {
+    text-align: center;
+    padding: 28px 10px;
+    color: var(--muted2);
+    font-size: 12px;
+  }
+
+  .btn-app {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s;
+    line-height: 1.4;
+  }
+
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-accent:hover { background: var(--accent-hover); color: #fff; }
+  .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--gray-soft); }
+
+  .modal-backdrop-app {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,15,15,0.3);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+
+  .modal-backdrop-app.open { display: flex; }
+
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    width: 460px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-md);
+    position: relative;
+  }
+
+  .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.2px; }
+
+  .modal-close-btn {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 26px; height: 26px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--gray-soft);
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s;
+  }
+
+  .modal-close-btn:hover { background: var(--border); color: var(--text); }
+
+  .back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: color 0.15s;
+    border: none;
+    background: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding: 0;
+  }
+
+  .back-nav:hover { color: var(--accent); }
+
+  .detail-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+
+  .detail-tab {
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .detail-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+
+  .filter-input {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 7px 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .filter-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+
+  .loading-wrap { display: flex; align-items: center; justify-content: center; padding: 48px; }
+
+  .spinner-app {
+    width: 22px; height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
+  .empty-state i { font-size: 32px; display: block; margin-bottom: 10px; opacity: 0.35; }
+  .empty-state p { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  .empty-state small { font-size: 12.5px; color: var(--muted2); }
+
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  textarea.form-control { resize: vertical; min-height: 72px; }
+
+  #toast {
+    position: fixed;
+    bottom: 22px; right: 22px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+    box-shadow: var(--shadow-md);
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+  #toast.success { background: var(--green-soft); color: var(--green); border: 1px solid #bbf7d0; }
+  #toast.error { background: var(--red-soft); color: var(--red); border: 1px solid #fecaca; }
+
+  .hidden { display: none !important; }
+  .text-muted-app { color: var(--muted); font-size: 12.5px; }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Task<span>Scheduler</span></div>
+    <div class="auth-tagline">Task scheduling and project management.</div>
+
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="switchTab('login')">Sign in</div>
+      <div class="auth-tab" onclick="switchTab('signup')">Create account</div>
+    </div>
+
+    <div id="auth-msg"></div>
+
+    <div id="form-login">
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input class="form-control" type="email" id="l-email" placeholder="you@company.com">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input class="form-control" type="password" id="l-pass" placeholder="Password">
+      </div>
+      <button class="btn-primary-app" onclick="doLogin()">Sign in</button>
+    </div>
+
+    <div id="form-signup" class="hidden">
+      <div class="mb-3">
+        <label class="form-label">Full name</label>
+        <input class="form-control" type="text" id="s-name" placeholder="Jane Smith">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input class="form-control" type="email" id="s-email" placeholder="you@company.com">
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input class="form-control" type="password" id="s-pass" placeholder="Min 6 characters">
+      </div>
+      <button class="btn-primary-app" onclick="doSignup()">Create account</button>
+    </div>
+  </div>
+</div>
+
+<div id="app-screen">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="app-logo">
+        <div class="logo-icon"><i class="bi bi-layers-fill"></i></div>
+        Task<span>Scheduler</span>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;padding:8px 0">
+      <div class="nav-section-label">Workspace</div>
+      <button class="nav-link-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+        <i class="bi bi-grid-1x2"></i> Dashboard
+      </button>
+      <button class="nav-link-item" id="nav-projects" onclick="showPage('projects')">
+        <i class="bi bi-folder2"></i> Projects
+      </button>
+      <button class="nav-link-item" id="nav-tasks" onclick="showPage('tasks')">
+        <i class="bi bi-check2-square"></i> My Tasks
+      </button>
+      <button class="nav-link-item hidden" id="nav-users" onclick="showPage('users')">
+        <i class="bi bi-people"></i> Users
+      </button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-row">
+        <div class="user-avatar" id="u-avatar">U</div>
+        <div class="user-details">
+          <div class="user-name" id="u-name">User</div>
+          <span class="user-role-tag role-MEMBER" id="u-role">MEMBER</span>
+        </div>
+      </div>
+      <button class="logout-link" onclick="doLogout()">
+        <i class="bi bi-box-arrow-left"></i> Sign out
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-heading">Dashboard</div>
+      <div class="page-sub">Welcome back. Here's what's happening.</div>
+
+      <div class="row g-3 mb-4">
+        <div class="col">
+          <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-list-task"></i> Total</div>
+            <div class="stat-val" id="s-total">—</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="stat-card">
+            <div class="stat-label"><i class="bi bi-circle"></i> To Do</div>
+            <div class="stat-val" id="s-todo" style="color:var(--muted)">—</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="stat-card">
+            <div class="stat-label" style="color:var(--accent)"><i class="bi bi-arrow-clockwise"></i> In Progress</div>
+            <div class="stat-val" id="s-inprog" style="color:var(--accent)">—</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="stat-card">
+            <div class="stat-label" style="color:var(--green)"><i class="bi bi-check-circle"></i> Done</div>
+            <div class="stat-val" id="s-done" style="color:var(--green)">—</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="stat-card">
+            <div class="stat-label" style="color:var(--red)"><i class="bi bi-exclamation-circle"></i> Overdue</div>
+            <div class="stat-val" id="s-overdue" style="color:var(--red)">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Recent Tasks</div>
+      <div class="card-app" id="dash-task-list">
+        <div class="loading-wrap"><div class="spinner-app"></div></div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="page" id="page-projects">
+      <div class="d-flex align-items-start justify-content-between mb-1">
+        <div>
+          <div class="page-heading">Projects</div>
+          <div class="page-sub">All workspaces you are part of.</div>
+        </div>
+        <button class="btn-app btn-accent" onclick="openModal('m-create-project')">
+          <i class="bi bi-plus"></i> New Project
+        </button>
+      </div>
+      <div class="row g-3" id="projects-grid">
+        <div class="loading-wrap"><div class="spinner-app"></div></div>
+      </div>
+    </div>
+
+    <!-- PROJECT DETAIL -->
+    <div id="project-detail" class="hidden">
+      <button class="back-nav" onclick="backToProjects()">
+        <i class="bi bi-arrow-left"></i> Back to Projects
+      </button>
+
+      <div class="d-flex align-items-start justify-content-between mb-1">
+        <div>
+          <div class="page-heading" id="det-name">Project</div>
+          <div class="page-sub" id="det-desc"></div>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn-app btn-ghost" onclick="openAddTaskModal()">
+            <i class="bi bi-plus"></i> Add Task
+          </button>
+          <button class="btn-app btn-ghost hidden" id="btn-add-member" onclick="openAddMemberModal()">
+            <i class="bi bi-person-plus"></i> Add Member
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-tabs">
+        <div class="detail-tab active" onclick="switchDetailTab('board')">Board</div>
+        <div class="detail-tab" onclick="switchDetailTab('members')">Members</div>
+      </div>
+
+      <div id="tab-board">
+        <div class="kanban-wrap">
+          <div class="kanban-col">
+            <div class="kanban-header">
+              <span class="kanban-title">To Do</span>
+              <span class="kanban-badge" id="k-todo-c">0</span>
+            </div>
+            <div id="k-TODO"></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-header">
+              <span class="kanban-title" style="color:var(--accent)">In Progress</span>
+              <span class="kanban-badge" id="k-inprog-c">0</span>
+            </div>
+            <div id="k-IN_PROGRESS"></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-header">
+              <span class="kanban-title" style="color:var(--green)">Done</span>
+              <span class="kanban-badge" id="k-done-c">0</span>
+            </div>
+            <div id="k-DONE"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-members" class="hidden">
+        <div class="card-app">
+          <table class="app-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+            <tbody id="members-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY TASKS -->
+    <div class="page" id="page-tasks">
+      <div class="page-heading">My Tasks</div>
+      <div class="page-sub">All tasks currently assigned to you.</div>
+
+      <div class="filter-bar">
+        <input class="filter-input" style="flex:1;min-width:200px" type="text" id="tf-search" placeholder="Search tasks..." oninput="filterTasks()">
+        <select class="filter-input" id="tf-status" onchange="filterTasks()">
+          <option value="">All statuses</option>
+          <option value="TODO">To Do</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="DONE">Done</option>
+        </select>
+        <select class="filter-input" id="tf-priority" onchange="filterTasks()">
+          <option value="">All priorities</option>
+          <option value="HIGH">High</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="LOW">Low</option>
+        </select>
+      </div>
+
+      <div class="card-app" id="task-list-wrap">
+        <div class="loading-wrap"><div class="spinner-app"></div></div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="page" id="page-users">
+      <div class="page-heading">Users</div>
+      <div class="page-sub">All registered accounts.</div>
+      <div class="card-app">
+        <table class="app-table">
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="modal-backdrop-app" id="m-create-project">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeModal('m-create-project')"><i class="bi bi-x"></i></button>
+    <div class="modal-title">Create project</div>
+    <div id="m-cp-msg"></div>
+    <div class="mb-3">
+      <label class="form-label">Project name</label>
+      <input class="form-control" type="text" id="cp-name" placeholder="e.g. Website Redesign">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" id="cp-desc" placeholder="Brief description..."></textarea>
+    </div>
+    <button class="btn-app btn-accent w-100" onclick="createProject()">Create project</button>
+  </div>
+</div>
+
+<div class="modal-backdrop-app" id="m-add-task">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeModal('m-add-task')"><i class="bi bi-x"></i></button>
+    <div class="modal-title">New task</div>
+    <div id="m-at-msg"></div>
+    <div class="mb-3">
+      <label class="form-label">Title</label>
+      <input class="form-control" type="text" id="at-title" placeholder="Task title">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" id="at-desc" placeholder="Details (optional)"></textarea>
+    </div>
+    <div class="row g-2 mb-3">
+      <div class="col">
+        <label class="form-label">Priority</label>
+        <select class="form-select" id="at-priority">
+          <option value="LOW">Low</option>
+          <option value="MEDIUM" selected>Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+      </div>
+      <div class="col">
+        <label class="form-label">Due date</label>
+        <input class="form-control" type="date" id="at-due">
+      </div>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Assign to</label>
+      <select class="form-select" id="at-assign">
+        <option value="">Unassigned</option>
+      </select>
+    </div>
+    <button class="btn-app btn-accent w-100" onclick="createTask()">Add task</button>
+  </div>
+</div>
+
+<div class="modal-backdrop-app" id="m-update-task">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeModal('m-update-task')"><i class="bi bi-x"></i></button>
+    <div class="modal-title" id="ut-heading">Update task</div>
+    <input type="hidden" id="ut-id">
+    <div class="mb-3">
+      <label class="form-label">Status</label>
+      <select class="form-select" id="ut-status">
+        <option value="TODO">To Do</option>
+        <option value="IN_PROGRESS">In Progress</option>
+        <option value="DONE">Done</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Priority</label>
+      <select class="form-select" id="ut-priority">
+        <option value="LOW">Low</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HIGH">High</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Due date</label>
+      <input class="form-control" type="date" id="ut-due">
+    </div>
+    <div class="mb-3" id="ut-assign-wrap">
+      <label class="form-label">Assign to</label>
+      <select class="form-select" id="ut-assign"><option value="">Unassigned</option></select>
+    </div>
+    <button class="btn-app btn-accent w-100" onclick="updateTask()">Save changes</button>
+  </div>
+</div>
+
+<div class="modal-backdrop-app" id="m-add-member">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeModal('m-add-member')"><i class="bi bi-x"></i></button>
+    <div class="modal-title">Add member</div>
+    <div id="m-am-msg"></div>
+    <div class="mb-3">
+      <label class="form-label">Select user</label>
+      <select class="form-select" id="am-user"><option value="">Choose a user...</option></select>
+    </div>
+    <button class="btn-app btn-accent w-100" onclick="addMember()">Add to project</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+document.title = 'TaskScheduler';
+
+const API = 'http://localhost:5000/api';
+
+let token = localStorage.getItem('ts_token') || null;
+let me = JSON.parse(localStorage.getItem('ts_user') || 'null');
+let currentProjectId = null;
+let allMyTasks = [];
+let projectMembers = [];
+let allUsers = [];
+
+window.onload = () => { if (token && me) initApp(); };
+
+function switchTab(t) {
+  document.querySelectorAll('.auth-tab').forEach((b, i) =>
+    b.classList.toggle('active', (t === 'login' && i === 0) || (t === 'signup' && i === 1))
+  );
+  document.getElementById('form-login').classList.toggle('hidden', t !== 'login');
+  document.getElementById('form-signup').classList.toggle('hidden', t !== 'signup');
+  document.getElementById('auth-msg').innerHTML = '';
+}
+
+async function doLogin() {
+  const email = v('l-email'), password = v('l-pass');
+  if (!email || !password) return authMsg('Please fill all fields.', true);
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) return authMsg(data.message, true);
+    saveAuth(data); initApp();
+  } catch { authMsg('Cannot reach server. Is the backend running?', true); }
+}
+
+async function doSignup() {
+  const name = v('s-name'), email = v('s-email'), password = v('s-pass');
+  if (!name || !email || !password) return authMsg('Please fill all fields.', true);
+  try {
+    const res = await fetch(`${API}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) return authMsg(data.message, true);
+    saveAuth(data); initApp();
+  } catch { authMsg('Cannot reach server.', true); }
+}
+
+function saveAuth(d) {
+  token = d.token;
+  me = { _id: d._id, name: d.name, email: d.email, role: d.role };
+  localStorage.setItem('ts_token', token);
+  localStorage.setItem('ts_user', JSON.stringify(me));
+}
+
+function doLogout() {
+  token = null; me = null;
+  localStorage.removeItem('ts_token');
+  localStorage.removeItem('ts_user');
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+function authMsg(msg, err) {
+  document.getElementById('auth-msg').innerHTML =
+    `<div class="alert alert-${err ? 'danger' : 'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
+}
+
+function initApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('u-avatar').textContent = me.name.charAt(0).toUpperCase();
+  document.getElementById('u-name').textContent = me.name;
+  const rb = document.getElementById('u-role');
+  rb.textContent = me.role;
+  rb.className = `user-role-tag role-${me.role}`;
+  if (me.role === 'ADMIN') document.getElementById('nav-users').classList.remove('hidden');
+  loadDashboard();
+  loadProjects();
+  loadMyTasks();
+  if (me.role === 'ADMIN') loadUsers();
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('project-detail').classList.add('hidden');
+  document.getElementById('page-projects').classList.remove('hidden');
+  document.getElementById(`page-${name}`).classList.add('active');
+  document.getElementById(`nav-${name}`)?.classList.add('active');
+}
+
+async function apiFetch(path, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(`${API}${path}`, opts);
+  if (res.status === 401) { doLogout(); return null; }
+  return { ok: res.ok, data: await res.json() };
+}
+
+async function loadDashboard() {
+  const r = await apiFetch('/tasks/dashboard');
+  if (!r?.ok) return;
+  document.getElementById('s-total').textContent = r.data.total;
+  document.getElementById('s-todo').textContent = r.data.todo;
+  document.getElementById('s-inprog').textContent = r.data.inProgress;
+  document.getElementById('s-done').textContent = r.data.done;
+  document.getElementById('s-overdue').textContent = r.data.overdue;
+
+  const r2 = await apiFetch('/tasks');
+  if (!r2?.ok) return;
+  const tasks = r2.data.slice(0, 6);
+  const el = document.getElementById('dash-task-list');
+  el.innerHTML = tasks.length
+    ? tasks.map(t => taskRowHTML(t)).join('')
+    : emptyState('check2-square', 'No tasks yet', 'Get added to a project to see tasks here.');
+}
+
+async function loadProjects() {
+  const r = await apiFetch('/projects');
+  if (!r?.ok) return;
+  const grid = document.getElementById('projects-grid');
+  if (!r.data.length) {
+    grid.innerHTML = `<div class="col-12">${emptyState('folder2', 'No projects yet', 'Create your first project to get started.')}</div>`;
+    return;
+  }
+  grid.innerHTML = r.data.map(p => `
+    <div class="col-md-6 col-lg-4">
+      <div class="project-card" onclick="openProject('${p._id}','${esc(p.name)}','${esc(p.description||'')}')">
+        <div class="project-name">${esc(p.name)}</div>
+        <div class="project-desc">${esc(p.description || 'No description provided.')}</div>
+        <div class="project-footer">
+          <div class="avatar-stack">
+            ${(p.members||[]).slice(0,4).map(m =>
+              `<div class="mini-avatar" title="${esc(m.name||'')}">${(m.name||'?').charAt(0).toUpperCase()}</div>`
+            ).join('')}
+          </div>
+          <span style="font-size:12px;color:var(--muted)">${(p.members||[]).length} member${(p.members||[]).length!==1?'s':''}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function createProject() {
+  const name = v('cp-name');
+  if (!name) return modalMsg('m-cp-msg', 'Project name is required.', true);
+  const r = await apiFetch('/projects', 'POST', { name, description: v('cp-desc') });
+  if (!r?.ok) return modalMsg('m-cp-msg', r.data.message, true);
+  closeModal('m-create-project');
+  document.getElementById('cp-name').value = '';
+  document.getElementById('cp-desc').value = '';
+  loadProjects();
+  toast('Project created', 'success');
+}
+
+async function openProject(id, name, desc) {
+  currentProjectId = id;
+  document.getElementById('page-projects').classList.add('hidden');
+  document.getElementById('project-detail').classList.remove('hidden');
+  document.getElementById('det-name').textContent = name;
+  document.getElementById('det-desc').textContent = desc || 'No description.';
+  document.getElementById('btn-add-member').classList.toggle('hidden', me.role !== 'ADMIN');
+  switchDetailTab('board');
+  await Promise.all([loadProjectTasks(id), loadProjectMembers(id)]);
+}
+
+function backToProjects() {
+  currentProjectId = null;
+  document.getElementById('project-detail').classList.add('hidden');
+  document.getElementById('page-projects').classList.remove('hidden');
+}
+
+function switchDetailTab(t) {
+  document.querySelectorAll('.detail-tab').forEach((el, i) =>
+    el.classList.toggle('active', (t === 'board' && i === 0) || (t === 'members' && i === 1))
+  );
+  document.getElementById('tab-board').classList.toggle('hidden', t !== 'board');
+  document.getElementById('tab-members').classList.toggle('hidden', t !== 'members');
+}
+
+async function loadProjectTasks(id) {
+  const r = await apiFetch('/tasks');
+  if (!r?.ok) return;
+  renderKanban(r.data.filter(t => (t.projectId?._id || t.projectId) === id));
+}
+
+function renderKanban(tasks) {
+  const cols = { TODO: [], IN_PROGRESS: [], DONE: [] };
+  tasks.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
+  const ids = { TODO: 'k-TODO', IN_PROGRESS: 'k-IN_PROGRESS', DONE: 'k-DONE' };
+  const counts = { TODO: 'k-todo-c', IN_PROGRESS: 'k-inprog-c', DONE: 'k-done-c' };
+  Object.entries(cols).forEach(([status, items]) => {
+    document.getElementById(counts[status]).textContent = items.length;
+    document.getElementById(ids[status]).innerHTML = items.length
+      ? items.map(t => kanbanCardHTML(t)).join('')
+      : `<div class="empty-col"><i class="bi bi-inbox" style="font-size:18px;display:block;margin-bottom:6px;opacity:0.3"></i>No tasks</div>`;
+  });
+}
+
+function kanbanCardHTML(t) {
+  const due = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '';
+  const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE';
+  return `
+    <div class="kanban-card" onclick="openUpdateModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}')">
+      <div class="kanban-card-title">${esc(t.title)}</div>
+      <div class="kanban-card-footer">
+        <span class="badge-status s-${t.priority}">${t.priority}</span>
+        ${due ? `<span style="font-size:11px;color:${overdue?'var(--red)':'var(--muted)'}"><i class="bi bi-calendar3"></i> ${due}</span>` : ''}
+      </div>
+    </div>`;
+}
+
+async function loadProjectMembers(id) {
+  const r = await apiFetch('/projects');
+  if (!r?.ok) return;
+  const proj = r.data.find(p => p._id === id);
+  projectMembers = proj?.members || [];
+  document.getElementById('members-body').innerHTML = projectMembers.map(m => `
+    <tr>
+      <td>
+        <div class="d-flex align-items-center gap-2">
+          <div class="user-avatar" style="width:26px;height:26px;font-size:10px">${(m.name||'?').charAt(0).toUpperCase()}</div>
+          ${esc(m.name||'')}
+        </div>
+      </td>
+      <td class="text-muted-app">${esc(m.email||'')}</td>
+      <td><span class="badge-status s-${m.role}">${m.role}</span></td>
+    </tr>
+  `).join('');
+}
+
+async function loadMyTasks() {
+  const r = await apiFetch('/tasks');
+  if (!r?.ok) return;
+  allMyTasks = r.data;
+  renderTaskList(allMyTasks);
+}
+
+function renderTaskList(tasks) {
+  const el = document.getElementById('task-list-wrap');
+  el.innerHTML = tasks.length
+    ? tasks.map(t => taskRowHTML(t)).join('')
+    : emptyState('check2-square', 'No tasks found', 'Try adjusting your filters.');
+}
+
+function taskRowHTML(t) {
+  const proj = t.projectId?.name || '';
+  const due = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '';
+  const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE';
+  return `
+    <div class="task-row" onclick="openUpdateModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}')">
+      <div class="task-dot dot-${t.priority}"></div>
+      <div class="task-title-text">${esc(t.title)}</div>
+      ${proj ? `<span class="task-proj"><i class="bi bi-folder2" style="margin-right:3px"></i>${esc(proj)}</span>` : ''}
+      <span class="badge-status s-${t.status}">${t.status.replace('_',' ')}</span>
+      <span class="badge-status s-${t.priority}">${t.priority}</span>
+      ${due ? `<span class="task-due${overdue?' overdue':''}">${due}</span>` : ''}
+    </div>`;
+}
+
+function filterTasks() {
+  const q = v('tf-search').toLowerCase();
+  const st = document.getElementById('tf-status').value;
+  const pr = document.getElementById('tf-priority').value;
+  renderTaskList(allMyTasks.filter(t =>
+    (!q || t.title.toLowerCase().includes(q) || (t.description||'').toLowerCase().includes(q)) &&
+    (!st || t.status === st) &&
+    (!pr || t.priority === pr)
+  ));
+}
+
+async function openAddTaskModal() {
+  const sel = document.getElementById('at-assign');
+  sel.innerHTML = '<option value="">Unassigned</option>';
+  projectMembers.forEach(m => {
+    sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`;
+  });
+  openModal('m-add-task');
+}
+
+async function createTask() {
+  const title = v('at-title');
+  if (!title) return modalMsg('m-at-msg', 'Title is required.', true);
+  const body = { title, description: v('at-desc'), priority: document.getElementById('at-priority').value, projectId: currentProjectId };
+  const due = v('at-due'), assign = document.getElementById('at-assign').value;
+  if (due) body.dueDate = due;
+  if (assign) body.assignedTo = assign;
+  const r = await apiFetch('/tasks', 'POST', body);
+  if (!r?.ok) return modalMsg('m-at-msg', r.data.message, true);
+  closeModal('m-add-task');
+  document.getElementById('at-title').value = '';
+  document.getElementById('at-desc').value = '';
+  document.getElementById('at-due').value = '';
+  await loadProjectTasks(currentProjectId);
+  loadMyTasks(); loadDashboard();
+  toast('Task created', 'success');
+}
+
+function openUpdateModal(id, title, status, priority, due) {
+  document.getElementById('ut-id').value = id;
+  document.getElementById('ut-heading').textContent = title;
+  document.getElementById('ut-status').value = status;
+  document.getElementById('ut-priority').value = priority;
+  document.getElementById('ut-due').value = due || '';
+  const wrap = document.getElementById('ut-assign-wrap');
+  if (me.role === 'ADMIN') {
+    wrap.classList.remove('hidden');
+    const sel = document.getElementById('ut-assign');
+    sel.innerHTML = '<option value="">Unassigned</option>';
+    projectMembers.forEach(m => { sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`; });
+  } else {
+    wrap.classList.add('hidden');
+  }
+  openModal('m-update-task');
+}
+
+async function updateTask() {
+  const id = document.getElementById('ut-id').value;
+  const body = { status: document.getElementById('ut-status').value, priority: document.getElementById('ut-priority').value };
+  const due = v('ut-due');
+  if (due) body.dueDate = due;
+  if (me.role === 'ADMIN') {
+    const a = document.getElementById('ut-assign').value;
+    if (a) body.assignedTo = a;
+  }
+  const r = await apiFetch(`/tasks/${id}`, 'PATCH', body);
+  if (!r?.ok) { toast('Update failed', 'error'); return; }
+  closeModal('m-update-task');
+  if (currentProjectId) await loadProjectTasks(currentProjectId);
+  loadMyTasks(); loadDashboard();
+  toast('Task updated', 'success');
+}
+
+async function openAddMemberModal() {
+  const r = await apiFetch('/users');
+  if (!r?.ok) return toast('Could not load users', 'error');
+  allUsers = r.data;
+  const memberIds = projectMembers.map(m => m._id);
+  const sel = document.getElementById('am-user');
+  sel.innerHTML = '<option value="">Choose a user...</option>';
+  allUsers.filter(u => !memberIds.includes(u._id)).forEach(u => {
+    sel.innerHTML += `<option value="${u._id}">${esc(u.name)} — ${esc(u.email)}</option>`;
+  });
+  openModal('m-add-member');
+}
+
+async function addMember() {
+  const userId = document.getElementById('am-user').value;
+  if (!userId) return modalMsg('m-am-msg', 'Please select a user.', true);
+  const r = await apiFetch(`/projects/${currentProjectId}/members`, 'POST', { userId });
+  if (!r?.ok) return modalMsg('m-am-msg', r.data.message, true);
+  closeModal('m-add-member');
+  await loadProjectMembers(currentProjectId);
+  toast('Member added', 'success');
+}
+
+async function loadUsers() {
+  const r = await apiFetch('/users');
+  if (!r?.ok) return;
+  document.getElementById('users-body').innerHTML = r.data.map(u => `
+    <tr>
+      <td>
+        <div class="d-flex align-items-center gap-2">
+          <div class="user-avatar" style="width:26px;height:26px;font-size:10px">${u.name.charAt(0).toUpperCase()}</div>
+          ${esc(u.name)}
+        </div>
+      </td>
+      <td class="text-muted-app">${esc(u.email)}</td>
+      <td><span class="badge-status s-${u.role}">${u.role}</span></td>
+      <td class="text-muted-app">${new Date(u.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</td>
+    </tr>
+  `).join('');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  const m = document.querySelector(`#${id} [id$="-msg"]`);
+  if (m) m.innerHTML = '';
+}
+
+document.querySelectorAll('.modal-backdrop-app').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
+});
+
+function modalMsg(id, msg, err) {
+  document.getElementById(id).innerHTML =
+    `<div class="alert alert-${err?'danger':'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
+}
+
+let _tt;
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(_tt);
+  _tt = setTimeout(() => { el.className = type; }, 2400);
+}
+
+function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function emptyState(icon, title, sub) {
+  return `<div class="empty-state"><i class="bi bi-${icon}"></i><p>${title}</p><small>${sub}</small></div>`;
+}
+</script>
+</body>
+</html>
