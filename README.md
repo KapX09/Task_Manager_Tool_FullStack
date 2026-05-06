@@ -74,7 +74,6 @@ This project follows a REST API architecture with a MongoDB database.
 ## System Structure
 
 ```
-<<<<<<< HEAD
 project/                          ← Root
 ├── .gitignore
 ├── README.md
