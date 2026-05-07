@@ -1,28 +1,7 @@
 # Task Manager Application
 
 A web application to manage projects and tasks within a team. Users can create projects, assign tasks, and track progress based on their role.
-
-## Demo
-
-Screenshots of the application.
-
-### Login Page
-
-![Login](./output/login.png)
-
-### Project Page
-
-![Projects](./output/projects.png)
-
-### Task Page
-
-![Tasks](./output/tasks.png)
-a
-### Dashboard
-
-![Dashboard](./output/dashboard.png)
-
-> Images placed in a folder named `output` at the root of the repository.
+Demo link: [Click here to Check the management tool](https://taskmanagertoolfullstack-production.up.railway.app/)
 
 ## Overview
 
