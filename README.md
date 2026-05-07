@@ -8,21 +8,21 @@ Screenshots of the application.
 
 ### Login Page
 
-![Login](./assets/login.png)
+![Login](./output/login.png)
 
 ### Project Page
 
-![Projects](./assets/projects.png)
+![Projects](./output/projects.png)
 
 ### Task Page
 
-![Tasks](./assets/tasks.png)
+![Tasks](./output/tasks.png)
 a
 ### Dashboard
 
-![Dashboard](./assets/dashboard.png)
+![Dashboard](./output/dashboard.png)
 
-> Images placed in a folder named `assets` at the root of the repository.
+> Images placed in a folder named `output` at the root of the repository.
 
 ## Overview
 
@@ -78,7 +78,7 @@ project/                          ← Root
 ├── .gitignore
 ├── README.md
 ├── data/                    ← Empty folder (for MongoDB)
-├── assets/                  ← (optional, for images later)
+├── output/                  ← (optional, for images later)
 └── server/                  ← backend code (node.js Express)
     ├── public/
     │   └── index.html
