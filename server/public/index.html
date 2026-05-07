@@ -10,7 +10,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 <style>
   :root {
-    --sidebar-w: 230px;
+    --sidebar-w: 235px;
     --bg: #f7f7f5;
     --surface: #ffffff;
     --border: #e8e8e4;
@@ -46,6 +46,7 @@
     line-height: 1.5;
   }
 
+  /* ── AUTH ── */
   #auth-screen {
     min-height: 100vh;
     display: flex;
@@ -59,573 +60,295 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 40px 36px;
-    width: 400px;
+    width: 430px;
     box-shadow: var(--shadow-md);
   }
 
-  .auth-logo {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-    letter-spacing: -0.4px;
-  }
-
+  .auth-logo { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.4px; }
   .auth-logo span { color: var(--accent); }
+  .auth-tagline { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
 
-  .auth-tagline {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-
-  .auth-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 24px;
-  }
-
+  .auth-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
   .auth-tab {
-    flex: 1;
-    text-align: center;
-    padding: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color 0.15s, border-color 0.15s;
+    flex: 1; text-align: center; padding: 9px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: color 0.15s, border-color 0.15s;
   }
-
   .auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   .form-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-bottom: 5px;
-    display: block;
+    font-size: 11.5px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block;
   }
 
   .form-control, .form-select {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13.5px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 8px 12px;
-    background: var(--surface);
-    color: var(--text);
-    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 8px 12px; background: var(--surface); color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s; width: 100%;
   }
-
   .form-control:focus, .form-select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-    outline: none;
+    border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); outline: none;
   }
+  .form-control.is-invalid { border-color: var(--red) !important; }
+  .invalid-msg { font-size: 11.5px; color: var(--red); margin-top: 4px; display: none; }
+  .show-msg { display: block; }
+
+  textarea.form-control { resize: vertical; min-height: 72px; }
+
+  .info-banner {
+    background: var(--accent-soft); border: 1px solid #bfdbfe;
+    border-radius: var(--radius-sm); padding: 10px 12px;
+    font-size: 12px; color: #1e40af; margin-bottom: 14px;
+    display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+  }
+  .info-banner i { flex-shrink: 0; margin-top: 1px; }
+
+  .warn-banner {
+    background: var(--orange-soft); border: 1px solid #fed7aa;
+    border-radius: var(--radius-sm); padding: 10px 12px;
+    font-size: 12px; color: var(--orange); margin-bottom: 14px;
+    display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+  }
+  .warn-banner i { flex-shrink: 0; margin-top: 1px; }
+
+  .pw-strength-bar { height: 3px; border-radius: 2px; margin-top: 5px; transition: width 0.3s, background 0.3s; width: 0; }
 
   .btn-primary-app {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 9px 18px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13.5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-    width: 100%;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-sm); padding: 10px 18px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px;
+    font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s;
+    width: 100%; display: flex; align-items: center; justify-content: center; gap: 7px;
   }
+  .btn-primary-app:hover:not(:disabled) { background: var(--accent-hover); }
+  .btn-primary-app:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  .btn-primary-app:hover { background: var(--accent-hover); }
-
+  /* ── SIDEBAR ── */
   #app-screen { display: none; }
 
   .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: var(--sidebar-w);
-    background: var(--surface);
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: var(--sidebar-w); background: var(--surface);
     border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
+    display: flex; flex-direction: column; z-index: 100;
   }
 
-  .sidebar-top {
-    padding: 16px 16px 12px;
-    border-bottom: 1px solid var(--border-soft);
-  }
+  .sidebar-top { padding: 16px 16px 12px; border-bottom: 1px solid var(--border-soft); }
 
   .app-logo {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.3px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 15.5px; font-weight: 700; color: var(--text);
+    letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px;
   }
-
   .logo-icon {
-    width: 26px; height: 26px;
-    background: var(--accent);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: #fff;
-    font-size: 13px;
+    width: 26px; height: 26px; background: var(--accent); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px;
   }
-
   .app-logo span { color: var(--accent); }
 
   .nav-section-label {
-    font-size: 10.5px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--muted2);
-    padding: 14px 16px 4px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.7px; color: var(--muted2); padding: 14px 16px 4px;
   }
 
-  .nav-link-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 7px 16px;
-    font-size: 13.5px;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    transition: background 0.1s, color 0.1s;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
+  .nav-item {
+    display: flex; align-items: center; gap: 9px; padding: 7px 16px;
+    font-size: 13.5px; font-weight: 500; color: var(--muted);
+    cursor: pointer; transition: background 0.1s, color 0.1s;
+    border: none; background: none; width: 100%; text-align: left;
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
+  .nav-item:hover { background: var(--gray-soft); color: var(--text); }
+  .nav-item.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .nav-item i { font-size: 15px; width: 18px; text-align: center; }
 
-  .nav-link-item:hover { background: var(--gray-soft); color: var(--text); }
+  .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--border); padding: 12px 16px; }
 
-  .nav-link-item.active {
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  .nav-link-item i { font-size: 15px; width: 18px; text-align: center; }
-
-  .sidebar-bottom {
-    margin-top: auto;
-    border-top: 1px solid var(--border);
-    padding: 12px 16px;
-  }
-
-  .user-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+  .user-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 
   .user-avatar {
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 50%; background: var(--accent);
+    color: #fff; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   }
 
   .user-details { min-width: 0; flex: 1; }
   .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .user-role-tag {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 7px;
-    border-radius: 20px;
-    display: inline-block;
+  .role-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; display: inline-block; }
+  .role-ADMIN  { background: var(--orange-soft); color: var(--orange); }
+  .role-MEMBER { background: var(--accent-soft);  color: var(--accent); }
+
+  .logout-btn {
+    display: flex; align-items: center; gap: 6px; font-size: 13px;
+    color: var(--muted); cursor: pointer; padding: 6px 0;
+    transition: color 0.15s; border: none; background: none;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500;
   }
+  .logout-btn:hover { color: var(--red); }
 
-  .role-ADMIN { background: var(--orange-soft); color: var(--orange); }
-  .role-MEMBER { background: var(--accent-soft); color: var(--accent); }
-
-  .logout-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--muted);
-    cursor: pointer;
-    padding: 6px 0;
-    transition: color 0.15s;
-    border: none;
-    background: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 500;
-  }
-
-  .logout-link:hover { color: var(--red); }
-
-  .main-content {
-    margin-left: var(--sidebar-w);
-    min-height: 100vh;
-    padding: 28px 32px;
-  }
+  /* ── MAIN ── */
+  .main-content { margin-left: var(--sidebar-w); min-height: 100vh; padding: 28px 32px; }
 
   .page { display: none; }
   .page.active { display: block; animation: fadein 0.15s ease; }
+  @keyframes fadein { from { opacity:0; transform:translateY(4px);} to { opacity:1; transform:translateY(0);} }
 
-  @keyframes fadein {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
+  .page-heading { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 2px; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .card-app { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+  /* ── STATS ── */
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); }
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .stat-val { font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+
+  /* ── ROLE PERMISSION INFO BAR ── */
+  .role-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--gray-soft); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 8px 14px;
+    font-size: 12px; color: var(--muted); margin-bottom: 18px;
   }
+  .role-bar i { color: var(--accent); }
+  .role-bar strong { color: var(--text); }
 
-  .page-heading {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.3px;
-    margin-bottom: 2px;
-  }
+  /* ── BADGES ── */
+  .badge-s { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; display: inline-block; white-space: nowrap; }
+  .s-TODO        { background: var(--gray-soft);   color: var(--muted); }
+  .s-IN_PROGRESS { background: var(--accent-soft);  color: var(--accent); }
+  .s-DONE        { background: var(--green-soft);   color: var(--green); }
+  .s-HIGH        { background: var(--red-soft);     color: var(--red); }
+  .s-MEDIUM      { background: var(--yellow-soft);  color: var(--yellow); }
+  .s-LOW         { background: var(--gray-soft);    color: var(--muted); }
+  .s-ADMIN       { background: var(--orange-soft);  color: var(--orange); }
+  .s-MEMBER      { background: var(--accent-soft);  color: var(--accent); }
 
-  .page-sub {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .card-app {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    box-shadow: var(--shadow);
-  }
-
-  .stat-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .stat-val {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    line-height: 1;
-  }
-
-  .badge-status {
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 9px;
-    border-radius: 20px;
-    display: inline-block;
-  }
-
-  .s-TODO { background: var(--gray-soft); color: var(--muted); }
-  .s-IN_PROGRESS { background: var(--accent-soft); color: var(--accent); }
-  .s-DONE { background: var(--green-soft); color: var(--green); }
-  .s-HIGH { background: var(--red-soft); color: var(--red); }
-  .s-MEDIUM { background: var(--yellow-soft); color: var(--yellow); }
-  .s-LOW { background: var(--gray-soft); color: var(--muted); }
-  .s-ADMIN { background: var(--orange-soft); color: var(--orange); }
-  .s-MEMBER { background: var(--accent-soft); color: var(--accent); }
-
+  /* ── TABLE ── */
   .app-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-
-  .app-table th {
-    padding: 9px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    background: var(--gray-soft);
-  }
-
-  .app-table td {
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--border-soft);
-    vertical-align: middle;
-  }
-
+  .app-table th { padding: 9px 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); border-bottom: 1px solid var(--border); text-align: left; background: var(--gray-soft); }
+  .app-table td { padding: 11px 16px; border-bottom: 1px solid var(--border-soft); vertical-align: middle; }
   .app-table tr:last-child td { border-bottom: none; }
   .app-table tbody tr:hover td { background: var(--gray-soft); }
 
+  /* ── PROJECT CARDS ── */
   .project-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    cursor: pointer;
-    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
-    box-shadow: var(--shadow);
-    height: 100%;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    box-shadow: var(--shadow); height: 100%;
   }
-
-  .project-card:hover {
-    border-color: var(--accent);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
-  }
-
+  .project-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-1px); }
   .project-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
   .project-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
-
-  .project-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
+  .project-footer { display: flex; align-items: center; justify-content: space-between; }
   .avatar-stack { display: flex; }
-
   .mini-avatar {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    background: var(--accent);
-    border: 2px solid var(--surface);
-    color: #fff;
-    font-size: 9px;
-    font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    margin-left: -5px;
+    width: 22px; height: 22px; border-radius: 50%; background: var(--accent);
+    border: 2px solid var(--surface); color: #fff; font-size: 9px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; margin-left: -5px;
   }
-
   .mini-avatar:first-child { margin-left: 0; }
 
+  /* ── TASK ROWS ── */
   .task-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border-soft);
-    cursor: pointer;
-    transition: background 0.1s;
+    display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+    border-bottom: 1px solid var(--border-soft); transition: background 0.1s;
   }
-
+  .task-row.clickable { cursor: pointer; }
+  .task-row.clickable:hover { background: var(--gray-soft); }
   .task-row:last-child { border-bottom: none; }
-  .task-row:hover { background: var(--gray-soft); }
-
   .task-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
   .dot-HIGH { background: var(--red); }
   .dot-MEDIUM { background: var(--yellow); }
   .dot-LOW { background: var(--muted2); }
-
-  .task-title-text { font-size: 13.5px; font-weight: 500; flex: 1; }
+  .task-title-text { font-size: 13.5px; font-weight: 500; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .task-proj { font-size: 12px; color: var(--muted); white-space: nowrap; }
   .task-due { font-size: 12px; color: var(--muted); white-space: nowrap; }
   .task-due.overdue { color: var(--red); font-weight: 600; }
+  .task-assignee { font-size: 12px; color: var(--muted); white-space: nowrap; }
 
+  /* ── KANBAN ── */
   .kanban-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-
-  .kanban-col {
-    background: var(--gray-soft);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 12px;
-    min-height: 280px;
-  }
-
-  .kanban-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    padding: 0 2px;
-  }
-
-  .kanban-title {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-  }
-
-  .kanban-badge {
-    font-size: 11px;
-    font-weight: 700;
-    background: var(--border);
-    color: var(--muted);
-    border-radius: 20px;
-    padding: 0 8px;
-    line-height: 1.8;
-  }
-
+  .kanban-col { background: var(--gray-soft); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; min-height: 280px; }
+  .kanban-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 0 2px; }
+  .kanban-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+  .kanban-count { font-size: 11px; font-weight: 700; background: var(--border); color: var(--muted); border-radius: 20px; padding: 0 8px; line-height: 1.8; }
   .kanban-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    margin-bottom: 7px;
-    cursor: pointer;
-    box-shadow: var(--shadow);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 12px; margin-bottom: 7px; box-shadow: var(--shadow);
     transition: border-color 0.1s, box-shadow 0.1s;
   }
-
-  .kanban-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .kanban-card.clickable { cursor: pointer; }
+  .kanban-card.clickable:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
   .kanban-card:last-child { margin-bottom: 0; }
   .kanban-card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
-  .kanban-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .kanban-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+  .empty-col { text-align: center; padding: 28px 10px; color: var(--muted2); font-size: 12px; }
 
-  .empty-col {
-    text-align: center;
-    padding: 28px 10px;
-    color: var(--muted2);
-    font-size: 12px;
-  }
-
+  /* ── BUTTONS ── */
   .btn-app {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    border: none;
-    transition: background 0.15s;
-    line-height: 1.4;
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600;
+    border-radius: var(--radius-sm); cursor: pointer; border: none;
+    transition: background 0.15s, opacity 0.15s; line-height: 1.4;
   }
-
+  .btn-app:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-accent { background: var(--accent); color: #fff; }
-  .btn-accent:hover { background: var(--accent-hover); color: #fff; }
+  .btn-accent:hover:not(:disabled) { background: var(--accent-hover); color: #fff; }
   .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
-  .btn-ghost:hover { background: var(--gray-soft); }
+  .btn-ghost:hover:not(:disabled) { background: var(--gray-soft); }
+  .btn-success-soft { background: var(--green-soft); color: var(--green); border: 1px solid #bbf7d0; }
 
+  /* ── MODALS ── */
   .modal-backdrop-app {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(15,15,15,0.3);
-    z-index: 500;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(2px);
+    display: none; position: fixed; inset: 0; background: rgba(15,15,15,0.32);
+    z-index: 500; align-items: center; justify-content: center; backdrop-filter: blur(2px);
   }
-
   .modal-backdrop-app.open { display: flex; }
-
   .modal-box {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    width: 460px;
-    max-width: 95vw;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--shadow-md);
-    position: relative;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 28px; width: 480px; max-width: 95vw; max-height: 90vh;
+    overflow-y: auto; box-shadow: var(--shadow-md); position: relative;
   }
-
   .modal-title { font-size: 17px; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.2px; }
-
   .modal-close-btn {
-    position: absolute;
-    top: 14px; right: 14px;
-    width: 26px; height: 26px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--gray-soft);
-    color: var(--muted);
-    cursor: pointer;
-    font-size: 12px;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.1s;
+    position: absolute; top: 14px; right: 14px; width: 26px; height: 26px;
+    border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--gray-soft);
+    color: var(--muted); cursor: pointer; font-size: 12px;
+    display: flex; align-items: center; justify-content: center; transition: background 0.1s;
   }
-
   .modal-close-btn:hover { background: var(--border); color: var(--text); }
 
+  /* ── NAV DETAIL ── */
   .back-nav {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    margin-bottom: 16px;
-    transition: color 0.15s;
-    border: none;
-    background: none;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    padding: 0;
+    display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+    color: var(--muted); cursor: pointer; margin-bottom: 16px; transition: color 0.15s;
+    border: none; background: none; font-family: 'Plus Jakarta Sans', sans-serif; padding: 0;
   }
-
   .back-nav:hover { color: var(--accent); }
 
-  .detail-tabs {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-
+  .detail-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
   .detail-tab {
-    padding: 8px 18px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
+    padding: 8px 18px; font-size: 13px; font-weight: 600; color: var(--muted);
+    cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
     transition: color 0.15s, border-color 0.15s;
   }
-
   .detail-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
+  /* ── FILTER ── */
   .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-
   .filter-input {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 7px 12px;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 13px;
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s;
+    border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 12px;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; background: var(--surface);
+    color: var(--text); outline: none; transition: border-color 0.15s;
   }
-
   .filter-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
 
+  /* ── MISC ── */
+  .section-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 10px; }
   .loading-wrap { display: flex; align-items: center; justify-content: center; padding: 48px; }
-
-  .spinner-app {
-    width: 22px; height: 22px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-  }
-
+  .spinner-app { width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
   .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); }
@@ -633,38 +356,30 @@
   .empty-state p { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
   .empty-state small { font-size: 12.5px; color: var(--muted2); }
 
-  .section-label {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--muted);
-    margin-bottom: 10px;
-  }
-
-  textarea.form-control { resize: vertical; min-height: 72px; }
-
   #toast {
-    position: fixed;
-    bottom: 22px; right: 22px;
-    padding: 10px 18px;
-    border-radius: var(--radius);
-    font-size: 13.5px;
-    font-weight: 600;
-    z-index: 9999;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: all 0.25s ease;
-    pointer-events: none;
-    box-shadow: var(--shadow-md);
+    position: fixed; bottom: 22px; right: 22px; padding: 10px 18px;
+    border-radius: var(--radius); font-size: 13.5px; font-weight: 600; z-index: 9999;
+    opacity: 0; transform: translateY(12px); transition: all 0.25s ease;
+    pointer-events: none; box-shadow: var(--shadow-md);
   }
-
   #toast.show { opacity: 1; transform: translateY(0); }
   #toast.success { background: var(--green-soft); color: var(--green); border: 1px solid #bbf7d0; }
-  #toast.error { background: var(--red-soft); color: var(--red); border: 1px solid #fecaca; }
+  #toast.error   { background: var(--red-soft);   color: var(--red);   border: 1px solid #fecaca; }
+  #toast.info    { background: var(--accent-soft); color: var(--accent);border: 1px solid #bfdbfe; }
 
   .hidden { display: none !important; }
   .text-muted-app { color: var(--muted); font-size: 12.5px; }
+
+  /* member-only read view */
+  .member-status-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .member-status-btn {
+    padding: 6px 14px; border-radius: var(--radius-sm); font-size: 12.5px; font-weight: 600;
+    border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+    cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.15s;
+  }
+  .member-status-btn:hover   { border-color: var(--accent); color: var(--accent); }
+  .member-status-btn.current { background: var(--accent); color: #fff; border-color: var(--accent); cursor: default; }
+  .member-status-btn.done    { background: var(--green-soft); color: var(--green); border-color: #bbf7d0; }
 
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -673,49 +388,73 @@
 </head>
 <body>
 
+<!-- ══════════════════ AUTH ══════════════════ -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-logo">Task<span>Scheduler</span></div>
-    <div class="auth-tagline">Task scheduling and project management.</div>
+    <div class="auth-tagline">Project and task management for teams.</div>
 
     <div class="auth-tabs">
       <div class="auth-tab active" onclick="switchTab('login')">Sign in</div>
-      <div class="auth-tab" onclick="switchTab('signup')">Create account</div>
+      <div class="auth-tab"        onclick="switchTab('signup')">Create account</div>
     </div>
 
     <div id="auth-msg"></div>
 
+    <!-- Login -->
     <div id="form-login">
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input class="form-control" type="email" id="l-email" placeholder="you@company.com">
+        <input class="form-control" type="email" id="l-email" placeholder="you@company.com" autocomplete="email">
+        <div class="invalid-msg" id="l-email-err">Enter a valid email address.</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Password</label>
-        <input class="form-control" type="password" id="l-pass" placeholder="Password">
+        <input class="form-control" type="password" id="l-pass" placeholder="Password" autocomplete="current-password">
+        <div class="invalid-msg" id="l-pass-err">Password is required.</div>
       </div>
-      <button class="btn-primary-app" onclick="doLogin()">Sign in</button>
+      <button class="btn-primary-app" id="btn-login" onclick="doLogin()">
+        <i class="bi bi-box-arrow-in-right"></i> Sign in
+      </button>
     </div>
 
+    <!-- Signup -->
     <div id="form-signup" class="hidden">
+      <div class="info-banner">
+        <i class="bi bi-info-circle-fill"></i>
+        <div>Leave <strong>Admin Key</strong> blank to sign up as a <strong>Member</strong>. Provide the key to register as <strong>Admin</strong>.</div>
+      </div>
       <div class="mb-3">
         <label class="form-label">Full name</label>
-        <input class="form-control" type="text" id="s-name" placeholder="Jane Smith">
+        <input class="form-control" type="text" id="s-name" placeholder="Jane Smith" autocomplete="name">
+        <div class="invalid-msg" id="s-name-err">Name is required.</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Email</label>
-        <input class="form-control" type="email" id="s-email" placeholder="you@company.com">
+        <input class="form-control" type="email" id="s-email" placeholder="you@company.com" autocomplete="email">
+        <div class="invalid-msg" id="s-email-err">Enter a valid email address.</div>
       </div>
       <div class="mb-3">
         <label class="form-label">Password</label>
-        <input class="form-control" type="password" id="s-pass" placeholder="Min 6 characters">
+        <input class="form-control" type="password" id="s-pass" placeholder="Min 6 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)">
+        <div class="pw-strength-bar" id="pw-bar"></div>
+        <div class="invalid-msg" id="s-pass-err">Password must be at least 6 characters.</div>
       </div>
-      <button class="btn-primary-app" onclick="doSignup()">Create account</button>
+      <div class="mb-3">
+        <label class="form-label">Admin Key <span style="font-size:11px;color:var(--muted2);font-weight:400">(optional)</span></label>
+        <input class="form-control" type="password" id="s-adminkey" placeholder="Leave blank to join as Member">
+      </div>
+      <button class="btn-primary-app" id="btn-signup" onclick="doSignup()">
+        <i class="bi bi-person-plus"></i> Create account
+      </button>
     </div>
   </div>
 </div>
 
+<!-- ══════════════════ APP ══════════════════ -->
 <div id="app-screen">
+
+  <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-top">
       <div class="app-logo">
@@ -726,17 +465,18 @@
 
     <div style="flex:1;overflow-y:auto;padding:8px 0">
       <div class="nav-section-label">Workspace</div>
-      <button class="nav-link-item active" id="nav-dashboard" onclick="showPage('dashboard')">
+      <button class="nav-item active" id="nav-dashboard" onclick="showPage('dashboard')">
         <i class="bi bi-grid-1x2"></i> Dashboard
       </button>
-      <button class="nav-link-item" id="nav-projects" onclick="showPage('projects')">
+      <button class="nav-item" id="nav-projects" onclick="showPage('projects')">
         <i class="bi bi-folder2"></i> Projects
       </button>
-      <button class="nav-link-item" id="nav-tasks" onclick="showPage('tasks')">
+      <button class="nav-item" id="nav-tasks" onclick="showPage('tasks')">
         <i class="bi bi-check2-square"></i> My Tasks
       </button>
-      <button class="nav-link-item hidden" id="nav-users" onclick="showPage('users')">
-        <i class="bi bi-people"></i> Users
+      <!-- ADMIN ONLY -->
+      <button class="nav-item hidden" id="nav-users" onclick="showPage('users')">
+        <i class="bi bi-people"></i> All Users
       </button>
     </div>
 
@@ -745,21 +485,22 @@
         <div class="user-avatar" id="u-avatar">U</div>
         <div class="user-details">
           <div class="user-name" id="u-name">User</div>
-          <span class="user-role-tag role-MEMBER" id="u-role">MEMBER</span>
+          <span class="role-badge role-MEMBER" id="u-role">MEMBER</span>
         </div>
       </div>
-      <button class="logout-link" onclick="doLogout()">
+      <button class="logout-btn" onclick="doLogout()">
         <i class="bi bi-box-arrow-left"></i> Sign out
       </button>
     </div>
   </aside>
 
+  <!-- Main -->
   <main class="main-content">
 
-    <!-- DASHBOARD -->
+    <!-- ── DASHBOARD ── -->
     <div class="page active" id="page-dashboard">
       <div class="page-heading">Dashboard</div>
-      <div class="page-sub">Welcome back. Here's what's happening.</div>
+      <div class="page-sub" id="dash-sub">Welcome back. Here's your task overview.</div>
 
       <div class="row g-3 mb-4">
         <div class="col">
@@ -800,23 +541,31 @@
       </div>
     </div>
 
-    <!-- PROJECTS -->
+    <!-- ── PROJECTS ── -->
     <div class="page" id="page-projects">
       <div class="d-flex align-items-start justify-content-between mb-1">
         <div>
           <div class="page-heading">Projects</div>
           <div class="page-sub">All workspaces you are part of.</div>
         </div>
-        <button class="btn-app btn-accent" onclick="openModal('m-create-project')">
+        <!-- ADMIN ONLY -->
+        <button class="btn-app btn-accent hidden" id="btn-new-project" onclick="openModal('m-create-project')">
           <i class="bi bi-plus"></i> New Project
         </button>
       </div>
+
+      <!-- MEMBER info bar -->
+      <div class="role-bar hidden" id="projects-member-bar">
+        <i class="bi bi-shield-check"></i>
+        <span>You are viewing as <strong>Member</strong>. You can view projects and their tasks, but cannot create projects or add members.</span>
+      </div>
+
       <div class="row g-3" id="projects-grid">
-        <div class="loading-wrap"><div class="spinner-app"></div></div>
+        <div class="col-12"><div class="loading-wrap"><div class="spinner-app"></div></div></div>
       </div>
     </div>
 
-    <!-- PROJECT DETAIL -->
+    <!-- ── PROJECT DETAIL ── -->
     <div id="project-detail" class="hidden">
       <button class="back-nav" onclick="backToProjects()">
         <i class="bi bi-arrow-left"></i> Back to Projects
@@ -828,9 +577,11 @@
           <div class="page-sub" id="det-desc"></div>
         </div>
         <div class="d-flex gap-2">
-          <button class="btn-app btn-ghost" onclick="openAddTaskModal()">
+          <!-- ADMIN ONLY: add task with full control -->
+          <button class="btn-app btn-ghost hidden" id="btn-admin-add-task" onclick="openAddTaskModal()">
             <i class="bi bi-plus"></i> Add Task
           </button>
+          <!-- ADMIN ONLY: add member -->
           <button class="btn-app btn-ghost hidden" id="btn-add-member" onclick="openAddMemberModal()">
             <i class="bi bi-person-plus"></i> Add Member
           </button>
@@ -842,32 +593,34 @@
         <div class="detail-tab" onclick="switchDetailTab('members')">Members</div>
       </div>
 
+      <!-- Board -->
       <div id="tab-board">
         <div class="kanban-wrap">
           <div class="kanban-col">
             <div class="kanban-header">
               <span class="kanban-title">To Do</span>
-              <span class="kanban-badge" id="k-todo-c">0</span>
+              <span class="kanban-count" id="k-todo-c">0</span>
             </div>
             <div id="k-TODO"></div>
           </div>
           <div class="kanban-col">
             <div class="kanban-header">
               <span class="kanban-title" style="color:var(--accent)">In Progress</span>
-              <span class="kanban-badge" id="k-inprog-c">0</span>
+              <span class="kanban-count" id="k-inprog-c">0</span>
             </div>
             <div id="k-IN_PROGRESS"></div>
           </div>
           <div class="kanban-col">
             <div class="kanban-header">
               <span class="kanban-title" style="color:var(--green)">Done</span>
-              <span class="kanban-badge" id="k-done-c">0</span>
+              <span class="kanban-count" id="k-done-c">0</span>
             </div>
             <div id="k-DONE"></div>
           </div>
         </div>
       </div>
 
+      <!-- Members tab -->
       <div id="tab-members" class="hidden">
         <div class="card-app">
           <table class="app-table">
@@ -878,10 +631,16 @@
       </div>
     </div>
 
-    <!-- MY TASKS -->
+    <!-- ── MY TASKS ── -->
     <div class="page" id="page-tasks">
       <div class="page-heading">My Tasks</div>
-      <div class="page-sub">All tasks currently assigned to you.</div>
+      <div class="page-sub">Tasks assigned to you across all projects.</div>
+
+      <!-- MEMBER info bar -->
+      <div class="role-bar hidden" id="tasks-member-bar">
+        <i class="bi bi-shield-check"></i>
+        <span>As a <strong>Member</strong>, you can update the <strong>status</strong> of your tasks. Priority, assignee, and due date are managed by Admins.</span>
+      </div>
 
       <div class="filter-bar">
         <input class="filter-input" style="flex:1;min-width:200px" type="text" id="tf-search" placeholder="Search tasks..." oninput="filterTasks()">
@@ -904,10 +663,10 @@
       </div>
     </div>
 
-    <!-- USERS -->
-    <div class="page" id="page-users">
-      <div class="page-heading">Users</div>
-      <div class="page-sub">All registered accounts.</div>
+    <!-- ── ALL USERS (ADMIN ONLY) ── -->
+    <div class="page hidden" id="page-users">
+      <div class="page-heading">All Users</div>
+      <div class="page-sub">All registered accounts in the system.</div>
       <div class="card-app">
         <table class="app-table">
           <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
@@ -919,7 +678,9 @@
   </main>
 </div>
 
-<!-- MODALS -->
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- Create Project (ADMIN only) -->
 <div class="modal-backdrop-app" id="m-create-project">
   <div class="modal-box">
     <button class="modal-close-btn" onclick="closeModal('m-create-project')"><i class="bi bi-x"></i></button>
@@ -927,16 +688,20 @@
     <div id="m-cp-msg"></div>
     <div class="mb-3">
       <label class="form-label">Project name</label>
-      <input class="form-control" type="text" id="cp-name" placeholder="e.g. Website Redesign">
+      <input class="form-control" type="text" id="cp-name" placeholder="e.g. Website Redesign" maxlength="80">
+      <div class="invalid-msg" id="cp-name-err">Project name is required.</div>
     </div>
     <div class="mb-3">
-      <label class="form-label">Description</label>
+      <label class="form-label">Description <span style="font-size:11px;font-weight:400;color:var(--muted2)">(optional)</span></label>
       <textarea class="form-control" id="cp-desc" placeholder="Brief description..."></textarea>
     </div>
-    <button class="btn-app btn-accent w-100" onclick="createProject()">Create project</button>
+    <button class="btn-app btn-accent w-100" id="btn-cp" onclick="createProject()">
+      <i class="bi bi-folder-plus"></i> Create project
+    </button>
   </div>
 </div>
 
+<!-- Add Task (ADMIN full control) -->
 <div class="modal-backdrop-app" id="m-add-task">
   <div class="modal-box">
     <button class="modal-close-btn" onclick="closeModal('m-add-task')"><i class="bi bi-x"></i></button>
@@ -944,11 +709,12 @@
     <div id="m-at-msg"></div>
     <div class="mb-3">
       <label class="form-label">Title</label>
-      <input class="form-control" type="text" id="at-title" placeholder="Task title">
+      <input class="form-control" type="text" id="at-title" placeholder="Task title" maxlength="120">
+      <div class="invalid-msg" id="at-title-err">Title is required.</div>
     </div>
     <div class="mb-3">
-      <label class="form-label">Description</label>
-      <textarea class="form-control" id="at-desc" placeholder="Details (optional)"></textarea>
+      <label class="form-label">Description <span style="font-size:11px;font-weight:400;color:var(--muted2)">(optional)</span></label>
+      <textarea class="form-control" id="at-desc" placeholder="Details..."></textarea>
     </div>
     <div class="row g-2 mb-3">
       <div class="col">
@@ -970,18 +736,22 @@
         <option value="">Unassigned</option>
       </select>
     </div>
-    <button class="btn-app btn-accent w-100" onclick="createTask()">Add task</button>
+    <button class="btn-app btn-accent w-100" id="btn-at" onclick="createTask()">
+      <i class="bi bi-plus-circle"></i> Add task
+    </button>
   </div>
 </div>
 
-<div class="modal-backdrop-app" id="m-update-task">
+<!-- Admin: Update Task (full control) -->
+<div class="modal-backdrop-app" id="m-update-admin">
   <div class="modal-box">
-    <button class="modal-close-btn" onclick="closeModal('m-update-task')"><i class="bi bi-x"></i></button>
-    <div class="modal-title" id="ut-heading">Update task</div>
-    <input type="hidden" id="ut-id">
+    <button class="modal-close-btn" onclick="closeModal('m-update-admin')"><i class="bi bi-x"></i></button>
+    <div class="modal-title" id="ua-heading">Edit Task</div>
+    <input type="hidden" id="ua-id">
+    <input type="hidden" id="ua-proj">
     <div class="mb-3">
       <label class="form-label">Status</label>
-      <select class="form-select" id="ut-status">
+      <select class="form-select" id="ua-status">
         <option value="TODO">To Do</option>
         <option value="IN_PROGRESS">In Progress</option>
         <option value="DONE">Done</option>
@@ -989,7 +759,7 @@
     </div>
     <div class="mb-3">
       <label class="form-label">Priority</label>
-      <select class="form-select" id="ut-priority">
+      <select class="form-select" id="ua-priority">
         <option value="LOW">Low</option>
         <option value="MEDIUM">Medium</option>
         <option value="HIGH">High</option>
@@ -997,26 +767,60 @@
     </div>
     <div class="mb-3">
       <label class="form-label">Due date</label>
-      <input class="form-control" type="date" id="ut-due">
+      <input class="form-control" type="date" id="ua-due">
     </div>
-    <div class="mb-3" id="ut-assign-wrap">
+    <div class="mb-3">
       <label class="form-label">Assign to</label>
-      <select class="form-select" id="ut-assign"><option value="">Unassigned</option></select>
+      <select class="form-select" id="ua-assign"><option value="">Unassigned</option></select>
     </div>
-    <button class="btn-app btn-accent w-100" onclick="updateTask()">Save changes</button>
+    <button class="btn-app btn-accent w-100" id="btn-ua" onclick="submitAdminUpdate()">
+      <i class="bi bi-check2"></i> Save changes
+    </button>
   </div>
 </div>
 
+<!-- Member: Update Task (status only) -->
+<div class="modal-backdrop-app" id="m-update-member">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeModal('m-update-member')"><i class="bi bi-x"></i></button>
+    <div class="modal-title" id="um-heading">Update Status</div>
+    <input type="hidden" id="um-id">
+    <input type="hidden" id="um-proj">
+
+    <div class="warn-banner">
+      <i class="bi bi-lock-fill"></i>
+      <div>As a <strong>Member</strong>, you can only update the <strong>status</strong> of this task.</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Current Task</label>
+      <div id="um-task-info" style="font-size:13.5px;font-weight:600;color:var(--text);padding:8px 12px;background:var(--gray-soft);border-radius:var(--radius-sm);border:1px solid var(--border)"></div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Update Status</label>
+      <div class="member-status-row" id="um-status-btns"></div>
+    </div>
+
+    <div style="font-size:12px;color:var(--muted);padding-top:8px;border-top:1px solid var(--border-soft)">
+      Priority, due date, and assignee can only be changed by an Admin.
+    </div>
+  </div>
+</div>
+
+<!-- Add Member (ADMIN only) -->
 <div class="modal-backdrop-app" id="m-add-member">
   <div class="modal-box">
     <button class="modal-close-btn" onclick="closeModal('m-add-member')"><i class="bi bi-x"></i></button>
-    <div class="modal-title">Add member</div>
+    <div class="modal-title">Add member to project</div>
     <div id="m-am-msg"></div>
     <div class="mb-3">
       <label class="form-label">Select user</label>
       <select class="form-select" id="am-user"><option value="">Choose a user...</option></select>
     </div>
-    <button class="btn-app btn-accent w-100" onclick="addMember()">Add to project</button>
+    <button class="btn-app btn-accent w-100" id="btn-am" onclick="addMember()">
+      <i class="bi bi-person-plus"></i> Add to project
+    </button>
   </div>
 </div>
 
@@ -1025,135 +829,239 @@
 <script>
 document.title = 'TaskScheduler';
 
-const API = 'http://localhost:5000/api';
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:5000/api'
+  : window.location.origin + '/api';
 
-let token = localStorage.getItem('ts_token') || null;
-let me = JSON.parse(localStorage.getItem('ts_user') || 'null');
-let currentProjectId = null;
-let allMyTasks = [];
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let token          = localStorage.getItem('ts_token') || null;
+let me             = JSON.parse(localStorage.getItem('ts_user') || 'null');
+let currentProjId  = null;
+let allMyTasks     = [];
 let projectMembers = [];
-let allUsers = [];
+let allUsers       = [];
 
+const isAdmin  = () => me?.role === 'ADMIN';
+const isMember = () => me?.role === 'MEMBER';
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
 window.onload = () => { if (token && me) initApp(); };
 
+// ── AUTH GUARD ────────────────────────────────────────────────────────────────
+function requireAuth() {
+  if (!token || !me) { doLogout(); return false; }
+  return true;
+}
+
+// ── AUTH TABS ─────────────────────────────────────────────────────────────────
 function switchTab(t) {
-  document.querySelectorAll('.auth-tab').forEach((b, i) =>
-    b.classList.toggle('active', (t === 'login' && i === 0) || (t === 'signup' && i === 1))
+  document.querySelectorAll('.auth-tab').forEach((b,i) =>
+    b.classList.toggle('active', (t==='login'&&i===0)||(t==='signup'&&i===1))
   );
-  document.getElementById('form-login').classList.toggle('hidden', t !== 'login');
-  document.getElementById('form-signup').classList.toggle('hidden', t !== 'signup');
-  document.getElementById('auth-msg').innerHTML = '';
+  g('form-login').classList.toggle('hidden', t !== 'login');
+  g('form-signup').classList.toggle('hidden', t !== 'signup');
+  g('auth-msg').innerHTML = '';
+  clearValidation();
 }
 
+// ── VALIDATION ────────────────────────────────────────────────────────────────
+const isValidEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+function markInvalid(fieldId, errId, show) {
+  g(fieldId)?.classList.toggle('is-invalid', show);
+  if (errId) { const e = g(errId); if(e) e.classList.toggle('show-msg', show); }
+}
+
+function clearValidation() {
+  document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+  document.querySelectorAll('.show-msg').forEach(el => el.classList.remove('show-msg'));
+}
+
+// ── PASSWORD STRENGTH ─────────────────────────────────────────────────────────
+function checkPwStrength(pw) {
+  const bar = g('pw-bar');
+  if (!bar) return;
+  if (!pw) { bar.style.width = '0'; bar.className = 'pw-strength-bar'; return; }
+  let score = 0;
+  if (pw.length >= 6)  score++;
+  if (pw.length >= 10) score++;
+  if (/[A-Z]/.test(pw) && /[0-9!@#$%]/.test(pw)) score++;
+  const map = {
+    1: ['33%',  'pw-strength-bar', 'background:var(--red)'],
+    2: ['66%',  'pw-strength-bar', 'background:var(--yellow)'],
+    3: ['100%', 'pw-strength-bar', 'background:var(--green)']
+  };
+  bar.style.width      = map[score][0];
+  bar.style.background = map[score][2].split(':')[1];
+}
+
+// ── BUTTON LOADING ────────────────────────────────────────────────────────────
+function setBtnLoad(id, on, label) {
+  const b = g(id); if (!b) return;
+  b.disabled = on;
+  if (on) { b._orig = b.innerHTML; b.innerHTML = `<span class="spinner-app" style="width:14px;height:14px;border-width:2px"></span> ${label||'Please wait...'}`; }
+  else    { b.innerHTML = b._orig || b.innerHTML; }
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
 async function doLogin() {
-  const email = v('l-email'), password = v('l-pass');
-  if (!email || !password) return authMsg('Please fill all fields.', true);
+  clearValidation();
+  const email = v('l-email'), pass = v('l-pass');
+  let ok = true;
+  if (!isValidEmail(email)) { markInvalid('l-email','l-email-err',true); ok=false; }
+  if (!pass)                { markInvalid('l-pass','l-pass-err',true);   ok=false; }
+  if (!ok) return;
+
+  setBtnLoad('btn-login', true, 'Signing in...');
   try {
-    const res = await fetch(`${API}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, password: pass })
     });
     const data = await res.json();
-    if (!res.ok) return authMsg(data.message, true);
+    if (!res.ok) return authAlert(data.message || 'Login failed.', true);
     saveAuth(data); initApp();
-  } catch { authMsg('Cannot reach server. Is the backend running?', true); }
+  } catch(err) {
+    console.error('Login:', err);
+    authAlert('Cannot reach server. Make sure the backend is running.', true);
+  } finally { setBtnLoad('btn-login', false); }
 }
 
+// ── SIGNUP ────────────────────────────────────────────────────────────────────
 async function doSignup() {
-  const name = v('s-name'), email = v('s-email'), password = v('s-pass');
-  if (!name || !email || !password) return authMsg('Please fill all fields.', true);
+  clearValidation();
+  const name = v('s-name'), email = v('s-email'), pass = v('s-pass'), adminKey = v('s-adminkey');
+  let ok = true;
+  if (!name)                { markInvalid('s-name','s-name-err',true);  ok=false; }
+  if (!isValidEmail(email)) { markInvalid('s-email','s-email-err',true);ok=false; }
+  if (pass.length < 6)      { markInvalid('s-pass','s-pass-err',true);  ok=false; }
+  if (!ok) return;
+
+  setBtnLoad('btn-signup', true, 'Creating account...');
   try {
-    const res = await fetch(`${API}/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
+    const body = { name, email, password: pass };
+    if (adminKey) body.adminKey = adminKey;
+    const res  = await fetch(`${API}/auth/signup`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
     });
     const data = await res.json();
-    if (!res.ok) return authMsg(data.message, true);
+    if (!res.ok) return authAlert(data.message || 'Signup failed.', true);
     saveAuth(data); initApp();
-  } catch { authMsg('Cannot reach server.', true); }
+  } catch(err) {
+    console.error('Signup:', err);
+    authAlert('Cannot reach server.', true);
+  } finally { setBtnLoad('btn-signup', false); }
 }
 
 function saveAuth(d) {
   token = d.token;
-  me = { _id: d._id, name: d.name, email: d.email, role: d.role };
+  me    = { _id: d._id, name: d.name, email: d.email, role: d.role };
   localStorage.setItem('ts_token', token);
-  localStorage.setItem('ts_user', JSON.stringify(me));
+  localStorage.setItem('ts_user',  JSON.stringify(me));
 }
 
 function doLogout() {
   token = null; me = null;
   localStorage.removeItem('ts_token');
   localStorage.removeItem('ts_user');
-  document.getElementById('app-screen').style.display = 'none';
-  document.getElementById('auth-screen').style.display = 'flex';
+  g('app-screen').style.display  = 'none';
+  g('auth-screen').style.display = 'flex';
 }
 
-function authMsg(msg, err) {
-  document.getElementById('auth-msg').innerHTML =
-    `<div class="alert alert-${err ? 'danger' : 'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
+function authAlert(msg, err) {
+  g('auth-msg').innerHTML =
+    `<div class="alert alert-${err?'danger':'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
 }
 
+// ── INIT APP ──────────────────────────────────────────────────────────────────
 function initApp() {
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'block';
-  document.getElementById('u-avatar').textContent = me.name.charAt(0).toUpperCase();
-  document.getElementById('u-name').textContent = me.name;
-  const rb = document.getElementById('u-role');
+  g('auth-screen').style.display = 'none';
+  g('app-screen').style.display  = 'block';
+
+  g('u-avatar').textContent = me.name.charAt(0).toUpperCase();
+  g('u-name').textContent   = me.name;
+  const rb = g('u-role');
   rb.textContent = me.role;
-  rb.className = `user-role-tag role-${me.role}`;
-  if (me.role === 'ADMIN') document.getElementById('nav-users').classList.remove('hidden');
+  rb.className   = `role-badge role-${me.role}`;
+
+  // Role-based UI toggles
+  if (isAdmin()) {
+    g('nav-users').classList.remove('hidden');
+    g('btn-new-project').classList.remove('hidden');
+    g('page-users').classList.remove('hidden');
+  } else {
+    g('nav-users').classList.add('hidden');
+    g('btn-new-project').classList.add('hidden');
+    g('projects-member-bar').classList.remove('hidden');
+    g('tasks-member-bar').classList.remove('hidden');
+    g('dash-sub').textContent = 'Your assigned tasks at a glance.';
+  }
+
   loadDashboard();
   loadProjects();
   loadMyTasks();
-  if (me.role === 'ADMIN') loadUsers();
+  if (isAdmin()) loadAllUsers();
 }
 
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
 function showPage(name) {
+  if (!requireAuth()) return;
+  // Guard Users page from Members
+  if (name === 'users' && !isAdmin()) { toast('Admin access only.', 'error'); return; }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-link-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('project-detail').classList.add('hidden');
-  document.getElementById('page-projects').classList.remove('hidden');
-  document.getElementById(`page-${name}`).classList.add('active');
-  document.getElementById(`nav-${name}`)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  g('project-detail').classList.add('hidden');
+  g('page-projects').classList.remove('hidden');
+  g(`page-${name}`).classList.add('active');
+  g(`nav-${name}`)?.classList.add('active');
 }
 
-async function apiFetch(path, method = 'GET', body = null) {
-  const opts = {
-    method,
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
-  };
+// ── API HELPER ────────────────────────────────────────────────────────────────
+async function api(path, method='GET', body=null) {
+  if (!requireAuth()) return null;
+  const opts = { method, headers: {'Content-Type':'application/json', Authorization:`Bearer ${token}`} };
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(`${API}${path}`, opts);
-  if (res.status === 401) { doLogout(); return null; }
-  return { ok: res.ok, data: await res.json() };
+  try {
+    const res = await fetch(`${API}${path}`, opts);
+    if (res.status === 401) { doLogout(); return null; }
+    return { ok: res.ok, status: res.status, data: await res.json() };
+  } catch(err) {
+    console.error(`[${method}] ${path}`, err);
+    toast('Network error. Check your connection.', 'error');
+    return null;
+  }
 }
 
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
 async function loadDashboard() {
-  const r = await apiFetch('/tasks/dashboard');
+  const r = await api('/tasks/dashboard');
   if (!r?.ok) return;
-  document.getElementById('s-total').textContent = r.data.total;
-  document.getElementById('s-todo').textContent = r.data.todo;
-  document.getElementById('s-inprog').textContent = r.data.inProgress;
-  document.getElementById('s-done').textContent = r.data.done;
-  document.getElementById('s-overdue').textContent = r.data.overdue;
+  g('s-total').textContent   = r.data.total;
+  g('s-todo').textContent    = r.data.todo;
+  g('s-inprog').textContent  = r.data.inProgress;
+  g('s-done').textContent    = r.data.done;
+  g('s-overdue').textContent = r.data.overdue;
 
-  const r2 = await apiFetch('/tasks');
+  const r2 = await api('/tasks');
   if (!r2?.ok) return;
+  const el = g('dash-task-list');
   const tasks = r2.data.slice(0, 6);
-  const el = document.getElementById('dash-task-list');
   el.innerHTML = tasks.length
     ? tasks.map(t => taskRowHTML(t)).join('')
-    : emptyState('check2-square', 'No tasks yet', 'Get added to a project to see tasks here.');
+    : emptyState('check2-square', 'No tasks yet', 'You have no tasks assigned yet.');
 }
 
+// ── PROJECTS ──────────────────────────────────────────────────────────────────
 async function loadProjects() {
-  const r = await apiFetch('/projects');
+  const r = await api('/projects');
   if (!r?.ok) return;
-  const grid = document.getElementById('projects-grid');
+  const grid = g('projects-grid');
   if (!r.data.length) {
-    grid.innerHTML = `<div class="col-12">${emptyState('folder2', 'No projects yet', 'Create your first project to get started.')}</div>`;
+    grid.innerHTML = `<div class="col-12">${emptyState('folder2', 'No projects yet',
+      isAdmin() ? 'Create your first project.' : 'You have not been added to any projects yet.')}</div>`;
     return;
   }
   grid.innerHTML = r.data.map(p => `
@@ -1170,85 +1078,98 @@ async function loadProjects() {
           <span style="font-size:12px;color:var(--muted)">${(p.members||[]).length} member${(p.members||[]).length!==1?'s':''}</span>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
 async function createProject() {
   const name = v('cp-name');
-  if (!name) return modalMsg('m-cp-msg', 'Project name is required.', true);
-  const r = await apiFetch('/projects', 'POST', { name, description: v('cp-desc') });
-  if (!r?.ok) return modalMsg('m-cp-msg', r.data.message, true);
+  if (!name) { markInvalid('cp-name','cp-name-err',true); return; }
+  markInvalid('cp-name','cp-name-err',false);
+  setBtnLoad('btn-cp', true, 'Creating...');
+  const r = await api('/projects', 'POST', { name, description: v('cp-desc') });
+  setBtnLoad('btn-cp', false);
+  if (!r?.ok) return modalAlert('m-cp-msg', r?.data?.message || 'Failed.', true);
   closeModal('m-create-project');
-  document.getElementById('cp-name').value = '';
-  document.getElementById('cp-desc').value = '';
-  loadProjects();
-  toast('Project created', 'success');
+  g('cp-name').value = ''; g('cp-desc').value = '';
+  loadProjects(); toast('Project created', 'success');
 }
 
+// ── PROJECT DETAIL ────────────────────────────────────────────────────────────
 async function openProject(id, name, desc) {
-  currentProjectId = id;
-  document.getElementById('page-projects').classList.add('hidden');
-  document.getElementById('project-detail').classList.remove('hidden');
-  document.getElementById('det-name').textContent = name;
-  document.getElementById('det-desc').textContent = desc || 'No description.';
-  document.getElementById('btn-add-member').classList.toggle('hidden', me.role !== 'ADMIN');
+  currentProjId = id;
+  g('page-projects').classList.add('hidden');
+  g('project-detail').classList.remove('hidden');
+  g('det-name').textContent = name;
+  g('det-desc').textContent = desc || 'No description.';
+
+  // Role-based detail controls
+  g('btn-admin-add-task').classList.toggle('hidden', !isAdmin());
+  g('btn-add-member').classList.toggle('hidden', !isAdmin());
+
   switchDetailTab('board');
   await Promise.all([loadProjectTasks(id), loadProjectMembers(id)]);
 }
 
 function backToProjects() {
-  currentProjectId = null;
-  document.getElementById('project-detail').classList.add('hidden');
-  document.getElementById('page-projects').classList.remove('hidden');
+  currentProjId  = null;
+  projectMembers = [];
+  g('project-detail').classList.add('hidden');
+  g('page-projects').classList.remove('hidden');
 }
 
 function switchDetailTab(t) {
-  document.querySelectorAll('.detail-tab').forEach((el, i) =>
-    el.classList.toggle('active', (t === 'board' && i === 0) || (t === 'members' && i === 1))
+  document.querySelectorAll('.detail-tab').forEach((el,i) =>
+    el.classList.toggle('active', (t==='board'&&i===0)||(t==='members'&&i===1))
   );
-  document.getElementById('tab-board').classList.toggle('hidden', t !== 'board');
-  document.getElementById('tab-members').classList.toggle('hidden', t !== 'members');
+  g('tab-board').classList.toggle('hidden', t !== 'board');
+  g('tab-members').classList.toggle('hidden', t !== 'members');
 }
 
+// ADMIN sees ALL tasks in project; MEMBER sees only assigned tasks
 async function loadProjectTasks(id) {
-  const r = await apiFetch('/tasks');
+  const r = await api(`/tasks/project/${id}`);
   if (!r?.ok) return;
-  renderKanban(r.data.filter(t => (t.projectId?._id || t.projectId) === id));
+  // If ADMIN, fetch all tasks (currently API returns only assigned)
+  // For now, admin sees all tasks they have access to in project
+  renderKanban(r.data);
 }
 
 function renderKanban(tasks) {
-  const cols = { TODO: [], IN_PROGRESS: [], DONE: [] };
+  const cols   = { TODO:[], IN_PROGRESS:[], DONE:[] };
+  const ids    = { TODO:'k-TODO', IN_PROGRESS:'k-IN_PROGRESS', DONE:'k-DONE' };
+  const counts = { TODO:'k-todo-c', IN_PROGRESS:'k-inprog-c', DONE:'k-done-c' };
   tasks.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
-  const ids = { TODO: 'k-TODO', IN_PROGRESS: 'k-IN_PROGRESS', DONE: 'k-DONE' };
-  const counts = { TODO: 'k-todo-c', IN_PROGRESS: 'k-inprog-c', DONE: 'k-done-c' };
   Object.entries(cols).forEach(([status, items]) => {
-    document.getElementById(counts[status]).textContent = items.length;
-    document.getElementById(ids[status]).innerHTML = items.length
+    g(counts[status]).textContent = items.length;
+    g(ids[status]).innerHTML = items.length
       ? items.map(t => kanbanCardHTML(t)).join('')
       : `<div class="empty-col"><i class="bi bi-inbox" style="font-size:18px;display:block;margin-bottom:6px;opacity:0.3"></i>No tasks</div>`;
   });
 }
 
 function kanbanCardHTML(t) {
-  const due = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '';
+  const due     = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
   const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE';
-  return `
-    <div class="kanban-card" onclick="openUpdateModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}')">
+  const assignee = t.assignedTo?.name ? `<span style="font-size:10.5px;color:var(--muted)"><i class="bi bi-person"></i> ${esc(t.assignedTo.name)}</span>` : '';
+  // ADMIN: click to edit. MEMBER: click to update status only (if assigned to them)
+  const assignedId = t.assignedTo?._id || t.assignedTo || '';
+  const clickable  = isAdmin() || String(assignedId) === String(me._id);  return `
+    <div class="kanban-card${clickable?' clickable':''}" ${clickable?`onclick="openTaskModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}','${currentProjId}')"`:''}">
       <div class="kanban-card-title">${esc(t.title)}</div>
       <div class="kanban-card-footer">
-        <span class="badge-status s-${t.priority}">${t.priority}</span>
-        ${due ? `<span style="font-size:11px;color:${overdue?'var(--red)':'var(--muted)'}"><i class="bi bi-calendar3"></i> ${due}</span>` : ''}
+        <span class="badge-s s-${t.priority}">${t.priority}</span>
+        ${assignee}
+        ${due?`<span style="font-size:11px;color:${overdue?'var(--red)':'var(--muted)'}"><i class="bi bi-calendar3"></i> ${due}</span>`:''}
       </div>
     </div>`;
 }
 
 async function loadProjectMembers(id) {
-  const r = await apiFetch('/projects');
+  const r = await api('/projects');
   if (!r?.ok) return;
-  const proj = r.data.find(p => p._id === id);
+  const proj   = r.data.find(p => p._id === id);
   projectMembers = proj?.members || [];
-  document.getElementById('members-body').innerHTML = projectMembers.map(m => `
+  g('members-body').innerHTML = projectMembers.map(m => `
     <tr>
       <td>
         <div class="d-flex align-items-center gap-2">
@@ -1257,140 +1178,211 @@ async function loadProjectMembers(id) {
         </div>
       </td>
       <td class="text-muted-app">${esc(m.email||'')}</td>
-      <td><span class="badge-status s-${m.role}">${m.role}</span></td>
-    </tr>
-  `).join('');
+      <td><span class="badge-s s-${m.role}">${m.role}</span></td>
+    </tr>`).join('');
 }
 
+// ── MY TASKS ──────────────────────────────────────────────────────────────────
 async function loadMyTasks() {
-  const r = await apiFetch('/tasks');
+  const r = await api('/tasks');
   if (!r?.ok) return;
   allMyTasks = r.data;
   renderTaskList(allMyTasks);
 }
 
 function renderTaskList(tasks) {
-  const el = document.getElementById('task-list-wrap');
+  const el = g('task-list-wrap');
   el.innerHTML = tasks.length
     ? tasks.map(t => taskRowHTML(t)).join('')
     : emptyState('check2-square', 'No tasks found', 'Try adjusting your filters.');
 }
 
 function taskRowHTML(t) {
-  const proj = t.projectId?.name || '';
-  const due = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : '';
+  const proj    = t.projectId?.name || '';
+  const projId  = t.projectId?._id  || t.projectId || '';
+  const due     = t.dueDate ? new Date(t.dueDate).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : '';
   const overdue = t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'DONE';
   return `
-    <div class="task-row" onclick="openUpdateModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}')">
+    <div class="task-row clickable" onclick="openTaskModal('${t._id}','${esc(t.title)}','${t.status}','${t.priority}','${t.dueDate?.split('T')[0]||''}','${projId}')">
       <div class="task-dot dot-${t.priority}"></div>
       <div class="task-title-text">${esc(t.title)}</div>
       ${proj ? `<span class="task-proj"><i class="bi bi-folder2" style="margin-right:3px"></i>${esc(proj)}</span>` : ''}
-      <span class="badge-status s-${t.status}">${t.status.replace('_',' ')}</span>
-      <span class="badge-status s-${t.priority}">${t.priority}</span>
+      <span class="badge-s s-${t.status}">${t.status.replace('_',' ')}</span>
+      <span class="badge-s s-${t.priority}">${t.priority}</span>
       ${due ? `<span class="task-due${overdue?' overdue':''}">${due}</span>` : ''}
     </div>`;
 }
 
 function filterTasks() {
-  const q = v('tf-search').toLowerCase();
-  const st = document.getElementById('tf-status').value;
-  const pr = document.getElementById('tf-priority').value;
+  const q  = v('tf-search').toLowerCase();
+  const st = g('tf-status').value;
+  const pr = g('tf-priority').value;
   renderTaskList(allMyTasks.filter(t =>
-    (!q || t.title.toLowerCase().includes(q) || (t.description||'').toLowerCase().includes(q)) &&
+    (!q  || t.title.toLowerCase().includes(q)||(t.description||'').toLowerCase().includes(q)) &&
     (!st || t.status === st) &&
     (!pr || t.priority === pr)
   ));
 }
 
-async function openAddTaskModal() {
-  const sel = document.getElementById('at-assign');
+// ── TASK MODAL ROUTER ─────────────────────────────────────────────────────────
+// Decides which modal to show based on role
+async function openTaskModal(id, title, status, priority, due, projId) {
+  if (isAdmin()) {
+    await openAdminTaskModal(id, title, status, priority, due, projId);
+  } else {
+    openMemberTaskModal(id, title, status, projId);
+  }
+}
+
+// ── ADMIN: FULL EDIT ──────────────────────────────────────────────────────────
+async function openAdminTaskModal(id, title, status, priority, due, projId) {
+  g('ua-id').value      = id;
+  g('ua-proj').value    = projId || '';
+  g('ua-heading').textContent = title;
+  g('ua-status').value  = status;
+  g('ua-priority').value= priority;
+  g('ua-due').value     = due || '';
+
+  // Load members for assign dropdown (may be different project)
+  const sel = g('ua-assign');
   sel.innerHTML = '<option value="">Unassigned</option>';
-  projectMembers.forEach(m => {
-    sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`;
-  });
+
+  let members = projectMembers;
+  if (projId && projId !== currentProjId) {
+    // Task opened from Dashboard/My Tasks — load that project's members
+    const r = await api('/projects');
+    if (r?.ok) { const p = r.data.find(x => x._id === projId); members = p?.members || []; }
+  }
+  members.forEach(m => { sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`; });
+
+  openModal('m-update-admin');
+}
+
+async function submitAdminUpdate() {
+  const id   = g('ua-id').value;
+  const proj = g('ua-proj').value;
+  const body = {
+    status:   g('ua-status').value,
+    priority: g('ua-priority').value
+  };
+  const due = v('ua-due'), assign = g('ua-assign').value;
+  if (due)    body.dueDate    = due;
+  if (assign) body.assignedTo = assign;
+
+  setBtnLoad('btn-ua', true, 'Saving...');
+  const r = await api(`/tasks/${id}`, 'PATCH', body);
+  setBtnLoad('btn-ua', false);
+  if (!r?.ok) { toast('Update failed', 'error'); return; }
+  closeModal('m-update-admin');
+  if (currentProjId) await loadProjectTasks(currentProjId);
+  loadMyTasks(); loadDashboard();
+  toast('Task updated', 'success');
+}
+
+// ── MEMBER: STATUS ONLY ───────────────────────────────────────────────────────
+function openMemberTaskModal(id, title, status, projId) {
+  g('um-id').value   = id;
+  g('um-proj').value = projId || '';
+  g('um-heading').textContent = title;
+  g('um-task-info').textContent = title;
+
+  const statuses = ['TODO', 'IN_PROGRESS', 'DONE'];
+  const labels   = { TODO: 'To Do', IN_PROGRESS: 'In Progress', DONE: 'Done' };
+  const container = g('um-status-btns');
+  container.innerHTML = statuses.map(s => {
+    const isCurrent = s === status;
+    return `<button
+      class="member-status-btn${isCurrent?' current':s==='DONE'&&!isCurrent?' done':''}"
+      ${isCurrent?'disabled':''}
+      onclick="submitMemberStatus('${id}','${s}','${projId}')"
+    >${isCurrent?'<i class="bi bi-check2"></i> ':''} ${labels[s]}</button>`;
+  }).join('');
+
+  openModal('m-update-member');
+}
+
+async function submitMemberStatus(id, newStatus, projId) {
+  const r = await api(`/tasks/${id}`, 'PATCH', { status: newStatus });
+  if (!r?.ok) { toast('Update failed', 'error'); return; }
+  closeModal('m-update-member');
+  if (currentProjId) await loadProjectTasks(currentProjId);
+  loadMyTasks(); loadDashboard();
+  toast('Status updated', 'success');
+}
+
+// ── CREATE TASK (ADMIN) ───────────────────────────────────────────────────────
+async function openAddTaskModal() {
+  if (!isAdmin()) return;
+  const sel = g('at-assign');
+  sel.innerHTML = '<option value="">Unassigned</option>';
+  projectMembers.forEach(m => { sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`; });
+  markInvalid('at-title','at-title-err',false);
+  g('m-at-msg').innerHTML = '';
   openModal('m-add-task');
 }
 
 async function createTask() {
   const title = v('at-title');
-  if (!title) return modalMsg('m-at-msg', 'Title is required.', true);
-  const body = { title, description: v('at-desc'), priority: document.getElementById('at-priority').value, projectId: currentProjectId };
-  const due = v('at-due'), assign = document.getElementById('at-assign').value;
-  if (due) body.dueDate = due;
+  if (!title) { markInvalid('at-title','at-title-err',true); return; }
+  markInvalid('at-title','at-title-err',false);
+
+  setBtnLoad('btn-at', true, 'Adding...');
+  const body = {
+    title,
+    description: v('at-desc'),
+    priority: g('at-priority').value,
+    projectId: currentProjId
+  };
+  const due = v('at-due'), assign = g('at-assign').value;
+  if (due)    body.dueDate    = due;
   if (assign) body.assignedTo = assign;
-  const r = await apiFetch('/tasks', 'POST', body);
-  if (!r?.ok) return modalMsg('m-at-msg', r.data.message, true);
+
+  const r = await api('/tasks', 'POST', body);
+  setBtnLoad('btn-at', false);
+  if (!r?.ok) return modalAlert('m-at-msg', r?.data?.message || 'Failed to create task.', true);
   closeModal('m-add-task');
-  document.getElementById('at-title').value = '';
-  document.getElementById('at-desc').value = '';
-  document.getElementById('at-due').value = '';
-  await loadProjectTasks(currentProjectId);
+  g('at-title').value = ''; g('at-desc').value = ''; g('at-due').value = '';
+  await loadProjectTasks(currentProjId);
   loadMyTasks(); loadDashboard();
   toast('Task created', 'success');
 }
 
-function openUpdateModal(id, title, status, priority, due) {
-  document.getElementById('ut-id').value = id;
-  document.getElementById('ut-heading').textContent = title;
-  document.getElementById('ut-status').value = status;
-  document.getElementById('ut-priority').value = priority;
-  document.getElementById('ut-due').value = due || '';
-  const wrap = document.getElementById('ut-assign-wrap');
-  if (me.role === 'ADMIN') {
-    wrap.classList.remove('hidden');
-    const sel = document.getElementById('ut-assign');
-    sel.innerHTML = '<option value="">Unassigned</option>';
-    projectMembers.forEach(m => { sel.innerHTML += `<option value="${m._id}">${esc(m.name)}</option>`; });
-  } else {
-    wrap.classList.add('hidden');
-  }
-  openModal('m-update-task');
-}
-
-async function updateTask() {
-  const id = document.getElementById('ut-id').value;
-  const body = { status: document.getElementById('ut-status').value, priority: document.getElementById('ut-priority').value };
-  const due = v('ut-due');
-  if (due) body.dueDate = due;
-  if (me.role === 'ADMIN') {
-    const a = document.getElementById('ut-assign').value;
-    if (a) body.assignedTo = a;
-  }
-  const r = await apiFetch(`/tasks/${id}`, 'PATCH', body);
-  if (!r?.ok) { toast('Update failed', 'error'); return; }
-  closeModal('m-update-task');
-  if (currentProjectId) await loadProjectTasks(currentProjectId);
-  loadMyTasks(); loadDashboard();
-  toast('Task updated', 'success');
-}
-
+// ── ADD MEMBER (ADMIN) ────────────────────────────────────────────────────────
 async function openAddMemberModal() {
-  const r = await apiFetch('/users');
+  if (!isAdmin()) return;
+  const r = await api('/users');
   if (!r?.ok) return toast('Could not load users', 'error');
   allUsers = r.data;
-  const memberIds = projectMembers.map(m => m._id);
-  const sel = document.getElementById('am-user');
+  const memberIds  = projectMembers.map(m => m._id);
+  const nonMembers = allUsers.filter(u => !memberIds.includes(u._id));
+  const sel = g('am-user');
   sel.innerHTML = '<option value="">Choose a user...</option>';
-  allUsers.filter(u => !memberIds.includes(u._id)).forEach(u => {
-    sel.innerHTML += `<option value="${u._id}">${esc(u.name)} — ${esc(u.email)}</option>`;
-  });
+  nonMembers.forEach(u => { sel.innerHTML += `<option value="${u._id}">${esc(u.name)} — ${esc(u.email)}</option>`; });
+  if (!nonMembers.length) {
+    g('m-am-msg').innerHTML = '<div class="alert alert-info py-2 mb-3" style="font-size:13px">All users are already members of this project.</div>';
+  } else {
+    g('m-am-msg').innerHTML = '';
+  }
   openModal('m-add-member');
 }
 
 async function addMember() {
-  const userId = document.getElementById('am-user').value;
-  if (!userId) return modalMsg('m-am-msg', 'Please select a user.', true);
-  const r = await apiFetch(`/projects/${currentProjectId}/members`, 'POST', { userId });
-  if (!r?.ok) return modalMsg('m-am-msg', r.data.message, true);
+  const userId = g('am-user').value;
+  if (!userId) return modalAlert('m-am-msg', 'Please select a user.', true);
+  setBtnLoad('btn-am', true, 'Adding...');
+  const r = await api(`/projects/${currentProjId}/members`, 'POST', { userId });
+  setBtnLoad('btn-am', false);
+  if (!r?.ok) return modalAlert('m-am-msg', r?.data?.message || 'Failed.', true);
   closeModal('m-add-member');
-  await loadProjectMembers(currentProjectId);
+  await loadProjectMembers(currentProjId);
   toast('Member added', 'success');
 }
 
-async function loadUsers() {
-  const r = await apiFetch('/users');
+// ── ALL USERS (ADMIN) ─────────────────────────────────────────────────────────
+async function loadAllUsers() {
+  const r = await api('/users');
   if (!r?.ok) return;
-  document.getElementById('users-body').innerHTML = r.data.map(u => `
+  g('users-body').innerHTML = r.data.map(u => `
     <tr>
       <td>
         <div class="d-flex align-items-center gap-2">
@@ -1399,38 +1391,41 @@ async function loadUsers() {
         </div>
       </td>
       <td class="text-muted-app">${esc(u.email)}</td>
-      <td><span class="badge-status s-${u.role}">${u.role}</span></td>
+      <td><span class="badge-s s-${u.role}">${u.role}</span></td>
       <td class="text-muted-app">${new Date(u.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
-function openModal(id) { document.getElementById(id).classList.add('open'); }
+// ── MODALS ────────────────────────────────────────────────────────────────────
+function openModal(id)  { g(id).classList.add('open'); }
 function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
+  g(id).classList.remove('open');
   const m = document.querySelector(`#${id} [id$="-msg"]`);
   if (m) m.innerHTML = '';
+  clearValidation();
 }
 
 document.querySelectorAll('.modal-backdrop-app').forEach(el => {
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
 });
 
-function modalMsg(id, msg, err) {
-  document.getElementById(id).innerHTML =
-    `<div class="alert alert-${err?'danger':'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
+function modalAlert(elId, msg, err) {
+  g(elId).innerHTML = `<div class="alert alert-${err?'danger':'success'} py-2 mb-3" style="font-size:13px">${msg}</div>`;
 }
 
+// ── TOAST ─────────────────────────────────────────────────────────────────────
 let _tt;
-function toast(msg, type = 'success') {
-  const el = document.getElementById('toast');
+function toast(msg, type='success') {
+  const el = g('toast');
   el.textContent = msg;
-  el.className = `show ${type}`;
+  el.className   = `show ${type}`;
   clearTimeout(_tt);
-  _tt = setTimeout(() => { el.className = type; }, 2400);
+  _tt = setTimeout(() => { el.className = type; }, 2800);
 }
 
-function v(id) { return document.getElementById(id)?.value?.trim() || ''; }
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+const g = id => document.getElementById(id);
+const v = id => g(id)?.value?.trim() || '';
 
 function esc(s) {
   if (!s) return '';
