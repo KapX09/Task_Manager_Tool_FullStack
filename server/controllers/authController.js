@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const signup = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, adminKey } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -16,14 +16,17 @@ const signup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Determine role based on adminKey
+    const role = (adminKey && process.env.ADMIN_KEY && adminKey === process.env.ADMIN_KEY)
+      ? 'ADMIN'
+      : 'MEMBER';
+
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: 'MEMBER'
+      role
     });
-    // added at the end
-    const role = (req.body.adminKey && req.body.adminKey === process.env.ADMIN_KEY) ? 'ADMIN' : 'MEMBER';
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
